@@ -1,0 +1,147 @@
+{
+  "id": "0",
+  "name": "Diagram 1",
+  "createdAt": "2025-08-21T22:31:12.783Z",
+  "updatedAt": "2025-08-21T23:01:07.658Z",
+  "databaseType": "postgresql",
+  "tables": [
+    {
+      "id": "1",
+      "name": "sets",
+      "x": 71,
+      "y": 139,
+      "fields": [
+        {
+          "id": "2",
+          "name": "code",
+          "type": {
+            "id": "text",
+            "name": "text"
+          },
+          "unique": true,
+          "nullable": false,
+          "primaryKey": true,
+          "createdAt": 1755815554877
+        },
+        {
+          "id": "3",
+          "name": "name",
+          "type": {
+            "id": "text",
+            "name": "text"
+          },
+          "unique": false,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1755815718969
+        },
+        {
+          "id": "4",
+          "name": "created_at",
+          "type": {
+            "id": "timestamp",
+            "name": "timestamp"
+          },
+          "unique": false,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1755815514326
+        },
+        {
+          "id": "5",
+          "name": "updated_at",
+          "type": {
+            "id": "timestamp",
+            "name": "timestamp"
+          },
+          "unique": false,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1755815551194
+        }
+      ],
+      "indexes": [],
+      "color": "#4dee8a",
+      "createdAt": 1755815481248,
+      "isView": false,
+      "order": 0
+    },
+    {
+      "id": "6",
+      "name": "cards",
+      "x": 433,
+      "y": 128,
+      "fields": [
+        {
+          "id": "7",
+          "name": "id",
+          "type": {
+            "id": "uuid",
+            "name": "uuid"
+          },
+          "unique": true,
+          "nullable": false,
+          "primaryKey": true,
+          "createdAt": 1755817182901
+        },
+        {
+          "id": "8",
+          "name": "scryfall_oracle_id",
+          "type": {
+            "id": "uuid",
+            "name": "uuid"
+          },
+          "unique": true,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1755817204292
+        },
+        {
+          "id": "9",
+          "name": "name",
+          "type": {
+            "id": "text",
+            "name": "text"
+          },
+          "unique": true,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1755817220917
+        },
+        {
+          "id": "10",
+          "name": "created_at",
+          "type": {
+            "id": "timestamp",
+            "name": "timestamp"
+          },
+          "unique": false,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1755817236424
+        },
+        {
+          "id": "11",
+          "name": "updated_at",
+          "type": {
+            "id": "timestamp",
+            "name": "timestamp"
+          },
+          "unique": false,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1755817255623
+        }
+      ],
+      "indexes": [],
+      "color": "#ff6b8a",
+      "createdAt": 1755817182901,
+      "isView": false,
+      "order": 1
+    }
+  ],
+  "relationships": [],
+  "dependencies": [],
+  "areas": [],
+  "customTypes": []
+}
