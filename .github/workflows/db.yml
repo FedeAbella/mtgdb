@@ -1,0 +1,33 @@
+name: db
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  goose:
+    name: Goose Migration
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432/tcp
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Goose Up Migration
+        run: goose up postgres://postgres:postgres@localhost:5432/postgres up
+        working-directory: sql/schema
+
+      - name: Goose Down Migration
+        run: goose down postgres://postgres:postgres@localhost:5432/postgres down
+        working-directory: sql/schema
