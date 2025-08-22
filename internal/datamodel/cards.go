@@ -8,7 +8,7 @@ type AtomicCard struct {
 }
 
 type SetCard struct {
-	Id          uuid.UUID   `json:"uuid"`
+	UUID        uuid.UUID   `json:"uuid"`
 	Identifiers Identifiers `json:"identifiers"`
 	Name        string      `json:"name"`
 	Set         string      `json:"setCode"`
