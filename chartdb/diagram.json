@@ -2,7 +2,7 @@
   "id": "0",
   "name": "Diagram 1",
   "createdAt": "2025-08-21T22:31:12.783Z",
-  "updatedAt": "2025-08-21T23:01:07.658Z",
+  "updatedAt": "2025-08-22T00:55:09.869Z",
   "databaseType": "postgresql",
   "tables": [
     {
@@ -138,9 +138,129 @@
       "createdAt": 1755817182901,
       "isView": false,
       "order": 1
+    },
+    {
+      "id": "12",
+      "name": "set_cards",
+      "x": 247,
+      "y": 512,
+      "fields": [
+        {
+          "id": "13",
+          "name": "id",
+          "type": {
+            "id": "uuid",
+            "name": "uuid"
+          },
+          "unique": true,
+          "nullable": false,
+          "primaryKey": true,
+          "createdAt": 1755823797006
+        },
+        {
+          "id": "14",
+          "name": "scryfall_id",
+          "type": {
+            "id": "uuid",
+            "name": "uuid"
+          },
+          "unique": true,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1755823837733
+        },
+        {
+          "id": "15",
+          "name": "mtgjson_uuid",
+          "type": {
+            "id": "uuid",
+            "name": "uuid"
+          },
+          "unique": true,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1755823860048
+        },
+        {
+          "id": "16",
+          "name": "set_code",
+          "type": {
+            "id": "text",
+            "name": "text"
+          },
+          "unique": false,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1755823956979
+        },
+        {
+          "id": "17",
+          "name": "card_id",
+          "type": {
+            "id": "uuid",
+            "name": "uuid"
+          },
+          "unique": false,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1755823976788
+        },
+        {
+          "id": "18",
+          "name": "created_at",
+          "type": {
+            "id": "timestamp",
+            "name": "timestamp"
+          },
+          "unique": false,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1755824011628
+        },
+        {
+          "id": "19",
+          "name": "updated_at",
+          "type": {
+            "id": "timestamp",
+            "name": "timestamp"
+          },
+          "unique": false,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1755824024689
+        }
+      ],
+      "indexes": [],
+      "color": "#ff6363",
+      "createdAt": 1755823797006,
+      "isView": false,
+      "order": 2
     }
   ],
-  "relationships": [],
+  "relationships": [
+    {
+      "id": "20",
+      "name": "set_cards_set_code_fk",
+      "sourceTableId": "12",
+      "targetTableId": "1",
+      "sourceFieldId": "16",
+      "targetFieldId": "2",
+      "sourceCardinality": "many",
+      "targetCardinality": "one",
+      "createdAt": 1755824080601
+    },
+    {
+      "id": "21",
+      "name": "set_cards_card_id_fk",
+      "sourceTableId": "12",
+      "targetTableId": "6",
+      "sourceFieldId": "17",
+      "targetFieldId": "7",
+      "sourceCardinality": "many",
+      "targetCardinality": "one",
+      "createdAt": 1755824106873
+    }
+  ],
   "dependencies": [],
   "areas": [],
   "customTypes": []
