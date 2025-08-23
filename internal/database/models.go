@@ -5,33 +5,31 @@
 package database
 
 import (
-	"time"
-
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Card struct {
-	ID               uuid.UUID
-	ScryfallOracleID uuid.UUID
+	ID               pgtype.UUID
+	ScryfallOracleID pgtype.UUID
 	Name             string
-	CreatedAt        time.Time
-	UpdatedAt        time.Time
+	CreatedAt        pgtype.Timestamp
+	UpdatedAt        pgtype.Timestamp
 }
 
 type Set struct {
 	Code      string
 	Name      string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
 }
 
 type SetCard struct {
-	ID          uuid.UUID
-	ScryfallID  uuid.UUID
-	MtgjsonUuid uuid.UUID
-	MtgjsonV4ID uuid.UUID
+	ID          pgtype.UUID
+	ScryfallID  pgtype.UUID
+	MtgjsonUuid pgtype.UUID
+	MtgjsonV4ID pgtype.UUID
 	SetCode     string
-	CardID      uuid.UUID
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	CardID      pgtype.UUID
+	CreatedAt   pgtype.Timestamp
+	UpdatedAt   pgtype.Timestamp
 }

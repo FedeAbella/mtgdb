@@ -18,7 +18,7 @@ ORDER BY name ASC
 `
 
 func (q *Queries) GetAllSets(ctx context.Context) ([]Set, error) {
-	rows, err := q.db.QueryContext(ctx, getAllSets)
+	rows, err := q.db.Query(ctx, getAllSets)
 	if err != nil {
 		return nil, err
 	}
@@ -35,9 +35,6 @@ func (q *Queries) GetAllSets(ctx context.Context) ([]Set, error) {
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
