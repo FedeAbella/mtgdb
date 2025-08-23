@@ -2,8 +2,8 @@ package datamodel
 
 // file: AtomicCards.json
 type AllAtomicCards struct {
-	Meta Meta                    `json:"meta"`
-	Data map[string][]AtomicCard `json:"data"`
+	Meta Meta         `json:"meta"`
+	Data []AtomicCard `json:"data"`
 }
 
 // file: SetList.json
@@ -14,6 +14,6 @@ type AllSets struct {
 
 // file: AllIdentifiers.json
 type AllSetCards struct {
-	Meta Meta               `json:"meta"`
-	Data map[string]SetCard `json:"data"`
+	Meta Meta      `json:"meta"`
+	Data []SetCard `json:"data"`
 }
