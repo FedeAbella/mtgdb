@@ -1,4 +1,4 @@
-package main
+package files
 
 import (
 	"bytes"
@@ -6,7 +6,6 @@ import (
 	"log"
 	"os/exec"
 
-	"FedeAbella/mtgdb/internal/config"
 	"FedeAbella/mtgdb/internal/datamodel"
 )
 
@@ -27,7 +26,7 @@ func RunJQCmd(filepath string, jqFilter string) ([]byte, error) {
 }
 
 func ReadSetList() (datamodel.AllSets, error) {
-	jqBytes, err := RunJQCmd(config.AllSets.Path, config.AllSets.JQFilter)
+	jqBytes, err := RunJQCmd(allSets.Path, allSets.JQFilter)
 	if err != nil {
 		log.Println(err)
 		return datamodel.AllSets{}, err
@@ -44,7 +43,7 @@ func ReadSetList() (datamodel.AllSets, error) {
 }
 
 func ReadAtomicCards() (datamodel.AllAtomicCards, error) {
-	jqBytes, err := RunJQCmd(config.AllAtomicCards.Path, config.AllAtomicCards.JQFilter)
+	jqBytes, err := RunJQCmd(allAtomicCards.Path, allAtomicCards.JQFilter)
 	if err != nil {
 		log.Println(err)
 		return datamodel.AllAtomicCards{}, err
@@ -61,7 +60,7 @@ func ReadAtomicCards() (datamodel.AllAtomicCards, error) {
 }
 
 func ReadSetCards() (datamodel.AllSetCards, error) {
-	jqBytes, err := RunJQCmd(config.AllSetCards.Path, config.AllSetCards.JQFilter)
+	jqBytes, err := RunJQCmd(allSetCards.Path, allSetCards.JQFilter)
 	if err != nil {
 		log.Println(err)
 		return datamodel.AllSetCards{}, err
