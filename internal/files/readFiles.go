@@ -4,7 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"log"
+	"maps"
 	"os/exec"
+	"slices"
+
+	"github.com/google/uuid"
 
 	"FedeAbella/mtgdb/internal/datamodel"
 )
@@ -56,7 +60,22 @@ func ReadAtomicCards() (datamodel.AllAtomicCards, error) {
 		return datamodel.AllAtomicCards{}, err
 	}
 
-	return allCards, nil
+	filteredCards := make(map[uuid.UUID]datamodel.AtomicCard)
+
+	for _, card := range allCards.Data {
+		_, seen := filteredCards[card.Identifiers.ScryfallOracleId]
+		if seen && card.Layout == "reversible_card" {
+			continue
+		}
+
+		filteredCards[card.Identifiers.ScryfallOracleId] = card
+	}
+
+	uniqueCards := datamodel.AllAtomicCards{}
+	uniqueCards.Meta = allCards.Meta
+	uniqueCards.Data = slices.Collect(maps.Values(filteredCards))
+
+	return uniqueCards, nil
 }
 
 func ReadSetCards() (datamodel.AllSetCards, error) {
