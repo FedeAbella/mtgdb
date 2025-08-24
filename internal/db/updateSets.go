@@ -60,7 +60,7 @@ func (conn *DbConf) UpdateSets() []error {
 					Valid: true,
 				},
 			})
-		} else if !fSet.Equals(dbSet) {
+		} else if !fSet.Equals(&dbSet) {
 			updateSets = append(updateSets, sqlc.UpdateSetParams{
 				Code: fSet.Code,
 				Name: fSet.Name,
