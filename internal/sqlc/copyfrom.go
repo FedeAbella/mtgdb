@@ -9,6 +9,42 @@ import (
 	"context"
 )
 
+// iteratorForInsertCards implements pgx.CopyFromSource.
+type iteratorForInsertCards struct {
+	rows                 []InsertCardsParams
+	skippedFirstNextCall bool
+}
+
+func (r *iteratorForInsertCards) Next() bool {
+	if len(r.rows) == 0 {
+		return false
+	}
+	if !r.skippedFirstNextCall {
+		r.skippedFirstNextCall = true
+		return true
+	}
+	r.rows = r.rows[1:]
+	return len(r.rows) > 0
+}
+
+func (r iteratorForInsertCards) Values() ([]interface{}, error) {
+	return []interface{}{
+		r.rows[0].ID,
+		r.rows[0].Name,
+		r.rows[0].ScryfallOracleID,
+		r.rows[0].CreatedAt,
+		r.rows[0].UpdatedAt,
+	}, nil
+}
+
+func (r iteratorForInsertCards) Err() error {
+	return nil
+}
+
+func (q *Queries) InsertCards(ctx context.Context, arg []InsertCardsParams) (int64, error) {
+	return q.db.CopyFrom(ctx, []string{"cards"}, []string{"id", "name", "scryfall_oracle_id", "created_at", "updated_at"}, &iteratorForInsertCards{rows: arg})
+}
+
 // iteratorForInsertSets implements pgx.CopyFromSource.
 type iteratorForInsertSets struct {
 	rows                 []InsertSetsParams
