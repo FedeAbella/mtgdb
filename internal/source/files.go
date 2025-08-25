@@ -1,4 +1,4 @@
-package datamodel
+package source
 
 // file: AtomicCards.json
 type AllAtomicCards struct {

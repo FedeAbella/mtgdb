@@ -1,4 +1,4 @@
-package datamodel
+package source
 
 import (
 	"github.com/google/uuid"

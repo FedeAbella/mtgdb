@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 
-	"FedeAbella/mtgdb/internal/files"
+	"FedeAbella/mtgdb/internal/source"
 	"FedeAbella/mtgdb/internal/sqlc"
 )
 
@@ -16,7 +16,7 @@ func (conn *DbConf) UpdateCards() []error {
 	log.Printf("Updating All Atomic Cards")
 
 	start := time.Now()
-	fileCards, err := files.ReadAtomicCards()
+	fileCards, err := source.ReadAtomicCards()
 	if err != nil {
 		log.Println(err)
 		return []error{err}
