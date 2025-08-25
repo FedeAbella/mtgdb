@@ -1,4 +1,4 @@
-package datamodel
+package source
 
 type Meta struct {
 	Date    string `json:"date"`

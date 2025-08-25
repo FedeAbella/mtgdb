@@ -7,7 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgtype"
 
-	"FedeAbella/mtgdb/internal/files"
+	"FedeAbella/mtgdb/internal/source"
 	"FedeAbella/mtgdb/internal/sqlc"
 )
 
@@ -15,7 +15,7 @@ func (conn *DbConf) UpdateSets() []error {
 	log.Printf("Updating All Sets")
 
 	start := time.Now()
-	fileSets, err := files.ReadSetList()
+	fileSets, err := source.ReadSetList()
 	if err != nil {
 		log.Println(err)
 		return []error{err}

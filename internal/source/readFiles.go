@@ -1,4 +1,4 @@
-package files
+package source
 
 import (
 	"bytes"
@@ -9,8 +9,6 @@ import (
 	"slices"
 
 	"github.com/google/uuid"
-
-	"FedeAbella/mtgdb/internal/datamodel"
 )
 
 func RunJQCmd(filepath string, jqFilter string) ([]byte, error) {
@@ -29,38 +27,38 @@ func RunJQCmd(filepath string, jqFilter string) ([]byte, error) {
 	return jqOutBuf.Bytes(), nil
 }
 
-func ReadSetList() (datamodel.AllSets, error) {
+func ReadSetList() (AllSets, error) {
 	jqBytes, err := RunJQCmd(allSets.Path, allSets.JQFilter)
 	if err != nil {
 		log.Println(err)
-		return datamodel.AllSets{}, err
+		return AllSets{}, err
 	}
 
-	var allSets datamodel.AllSets
+	var allSets AllSets
 	err = json.Unmarshal(jqBytes, &allSets)
 	if err != nil {
 		log.Println(err)
-		return datamodel.AllSets{}, err
+		return AllSets{}, err
 	}
 
 	return allSets, nil
 }
 
-func ReadAtomicCards() (datamodel.AllAtomicCards, error) {
+func ReadAtomicCards() (AllAtomicCards, error) {
 	jqBytes, err := RunJQCmd(allAtomicCards.Path, allAtomicCards.JQFilter)
 	if err != nil {
 		log.Println(err)
-		return datamodel.AllAtomicCards{}, err
+		return AllAtomicCards{}, err
 	}
 
-	var allCards datamodel.AllAtomicCards
+	var allCards AllAtomicCards
 	err = json.Unmarshal(jqBytes, &allCards)
 	if err != nil {
 		log.Println(err)
-		return datamodel.AllAtomicCards{}, err
+		return AllAtomicCards{}, err
 	}
 
-	filteredCards := make(map[uuid.UUID]datamodel.AtomicCard)
+	filteredCards := make(map[uuid.UUID]AtomicCard)
 
 	for _, card := range allCards.Data {
 		_, seen := filteredCards[card.Identifiers.ScryfallOracleId]
@@ -71,25 +69,25 @@ func ReadAtomicCards() (datamodel.AllAtomicCards, error) {
 		filteredCards[card.Identifiers.ScryfallOracleId] = card
 	}
 
-	uniqueCards := datamodel.AllAtomicCards{}
+	uniqueCards := AllAtomicCards{}
 	uniqueCards.Meta = allCards.Meta
 	uniqueCards.Data = slices.Collect(maps.Values(filteredCards))
 
 	return uniqueCards, nil
 }
 
-func ReadSetCards() (datamodel.AllSetCards, error) {
+func ReadSetCards() (AllSetCards, error) {
 	jqBytes, err := RunJQCmd(allSetCards.Path, allSetCards.JQFilter)
 	if err != nil {
 		log.Println(err)
-		return datamodel.AllSetCards{}, err
+		return AllSetCards{}, err
 	}
 
-	var allCards datamodel.AllSetCards
+	var allCards AllSetCards
 	err = json.Unmarshal(jqBytes, &allCards)
 	if err != nil {
 		log.Println(err)
-		return datamodel.AllSetCards{}, err
+		return AllSetCards{}, err
 	}
 
 	return allCards, nil
