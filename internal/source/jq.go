@@ -1,21 +1,35 @@
 package source
 
+import (
+	"bytes"
+	"log"
+	"os/exec"
+)
+
 type jqFileConfig struct {
 	Path     string
 	JQFilter string
 }
 
-var allSets jqFileConfig = jqFileConfig{
-	Path:     "./src/SetList.json",
-	JQFilter: "{meta, data: [.data | .[] | {code, name}]}",
+var allScryfallCards jqFileConfig = jqFileConfig{
+	Path:     "./src/all-cards.json",
+	JQFilter: "map(select((any(.games[]; . == \"paper\")) and (.lang == \"en\" or .lang == \"es\")))",
 }
 
-var allAtomicCards jqFileConfig = jqFileConfig{
-	Path:     "./src/AtomicCards.json",
-	JQFilter: "{meta, data: [.data | to_entries | .[] | .value | .[0] | {name, identifiers}]}",
-}
+func RunJQCmd(jqFile jqFileConfig) ([]byte, error) {
+	jqCmd := exec.Command("jq", jqFile.JQFilter, jqFile.Path)
+	jqOutBuf := bytes.Buffer{}
+	jqErrBuf := bytes.Buffer{}
+	jqCmd.Stdout = &jqOutBuf
+	jqCmd.Stderr = &jqErrBuf
+	err := jqCmd.Run()
 
-var allSetCards jqFileConfig = jqFileConfig{
-	Path:     "./src/AllIdentifiers.json",
-	JQFilter: "{meta, data: [.data | to_entries | .[] | .value | {uuid, identifiers, name, setCode, number}]}",
+	if err != nil {
+		log.Println(jqOutBuf.String())
+		log.Println(jqErrBuf.String())
+		log.Println(err)
+		return []byte{}, err
+	}
+
+	return jqOutBuf.Bytes(), nil
 }

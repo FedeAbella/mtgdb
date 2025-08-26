@@ -9,6 +9,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"FedeAbella/mtgdb/internal/db"
+	"FedeAbella/mtgdb/internal/source"
 	"FedeAbella/mtgdb/internal/sqlc"
 )
 
@@ -25,6 +26,8 @@ func main() {
 
 		Queries: sqlc.New(conn),
 	}
+
+	source.GetScryfallData()
 
 	db.UpdateSets()
 	db.UpdateCards()
