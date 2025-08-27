@@ -44,7 +44,7 @@ jobs:
           DB_URL: ${{ env.DB_URL }}
 
       - name: Goose Down Migration
-        run: goose postgres "$DB_URL" down
+        run: goose postgres "$DB_URL" reset
         working-directory: sql/schema
         env:
           DB_URL: ${{ env.DB_URL }}
