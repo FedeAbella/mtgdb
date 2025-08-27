@@ -13,18 +13,25 @@ import (
 
 const updateSet = `-- name: UpdateSet :exec
 UPDATE sets
-SET name = $2,
-    updated_at = $3
-WHERE code = $1
+SET  code = $2,
+    name = $3,
+    updated_at = $4
+WHERE scryfall_id = $1
 `
 
 type UpdateSetParams struct {
-	Code      string
-	Name      string
-	UpdatedAt pgtype.Timestamp
+	ScryfallID pgtype.UUID
+	Code       string
+	Name       string
+	UpdatedAt  pgtype.Timestamp
 }
 
 func (q *Queries) UpdateSet(ctx context.Context, arg UpdateSetParams) error {
-	_, err := q.db.Exec(ctx, updateSet, arg.Code, arg.Name, arg.UpdatedAt)
+	_, err := q.db.Exec(ctx, updateSet,
+		arg.ScryfallID,
+		arg.Code,
+		arg.Name,
+		arg.UpdatedAt,
+	)
 	return err
 }

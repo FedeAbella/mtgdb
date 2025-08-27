@@ -10,8 +10,9 @@ import (
 )
 
 type InsertSetsParams struct {
-	Code      string
-	Name      string
-	CreatedAt pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
+	ScryfallID pgtype.UUID
+	Code       string
+	Name       string
+	CreatedAt  pgtype.Timestamp
+	UpdatedAt  pgtype.Timestamp
 }

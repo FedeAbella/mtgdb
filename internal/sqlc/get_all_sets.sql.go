@@ -11,10 +11,10 @@ import (
 
 const getAllSets = `-- name: GetAllSets :many
 SELECT
-    code, name, created_at, updated_at
+    scryfall_id, code, name, created_at, updated_at
 FROM
     sets
-ORDER BY name ASC
+ORDER BY code ASC
 `
 
 func (q *Queries) GetAllSets(ctx context.Context) ([]Set, error) {
@@ -27,6 +27,7 @@ func (q *Queries) GetAllSets(ctx context.Context) ([]Set, error) {
 	for rows.Next() {
 		var i Set
 		if err := rows.Scan(
+			&i.ScryfallID,
 			&i.Code,
 			&i.Name,
 			&i.CreatedAt,
