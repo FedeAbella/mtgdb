@@ -1,6 +1,7 @@
 -- +goose Up
 CREATE TABLE sets (
-    code TEXT PRIMARY KEY,
+    scryfall_id UUID PRIMARY KEY,
+    code TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL

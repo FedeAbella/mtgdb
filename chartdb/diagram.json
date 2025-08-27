@@ -2,17 +2,29 @@
   "id": "0",
   "name": "Diagram 1",
   "createdAt": "2025-08-21T22:31:12.783Z",
-  "updatedAt": "2025-08-22T00:55:09.869Z",
+  "updatedAt": "2025-08-27T01:17:15.769Z",
   "databaseType": "postgresql",
   "tables": [
     {
       "id": "1",
       "name": "sets",
-      "x": 71,
-      "y": 139,
+      "x": -336.69795862181945,
+      "y": 355.6562450267784,
       "fields": [
         {
           "id": "2",
+          "name": "scryfall_id",
+          "type": {
+            "id": "uuid",
+            "name": "uuid"
+          },
+          "unique": true,
+          "nullable": false,
+          "primaryKey": true,
+          "createdAt": 1756257204381
+        },
+        {
+          "id": "3",
           "name": "code",
           "type": {
             "id": "text",
@@ -20,11 +32,11 @@
           },
           "unique": true,
           "nullable": false,
-          "primaryKey": true,
+          "primaryKey": false,
           "createdAt": 1755815554877
         },
         {
-          "id": "3",
+          "id": "4",
           "name": "name",
           "type": {
             "id": "text",
@@ -36,7 +48,7 @@
           "createdAt": 1755815718969
         },
         {
-          "id": "4",
+          "id": "5",
           "name": "created_at",
           "type": {
             "id": "timestamp",
@@ -48,7 +60,7 @@
           "createdAt": 1755815514326
         },
         {
-          "id": "5",
+          "id": "6",
           "name": "updated_at",
           "type": {
             "id": "timestamp",
@@ -64,101 +76,17 @@
       "color": "#4dee8a",
       "createdAt": 1755815481248,
       "isView": false,
-      "order": 0
+      "order": 0,
+      "diagramId": "iu4lpanyfkyd"
     },
     {
-      "id": "6",
+      "id": "7",
       "name": "cards",
-      "x": 433,
-      "y": 128,
+      "x": 63.59654197003138,
+      "y": 376.35249980216014,
       "fields": [
-        {
-          "id": "7",
-          "name": "id",
-          "type": {
-            "id": "uuid",
-            "name": "uuid"
-          },
-          "unique": true,
-          "nullable": false,
-          "primaryKey": true,
-          "createdAt": 1755817182901
-        },
         {
           "id": "8",
-          "name": "scryfall_oracle_id",
-          "type": {
-            "id": "uuid",
-            "name": "uuid"
-          },
-          "unique": true,
-          "nullable": false,
-          "primaryKey": false,
-          "createdAt": 1755817204292
-        },
-        {
-          "id": "9",
-          "name": "name",
-          "type": {
-            "id": "text",
-            "name": "text"
-          },
-          "unique": true,
-          "nullable": false,
-          "primaryKey": false,
-          "createdAt": 1755817220917
-        },
-        {
-          "id": "10",
-          "name": "created_at",
-          "type": {
-            "id": "timestamp",
-            "name": "timestamp"
-          },
-          "unique": false,
-          "nullable": false,
-          "primaryKey": false,
-          "createdAt": 1755817236424
-        },
-        {
-          "id": "11",
-          "name": "updated_at",
-          "type": {
-            "id": "timestamp",
-            "name": "timestamp"
-          },
-          "unique": false,
-          "nullable": false,
-          "primaryKey": false,
-          "createdAt": 1755817255623
-        }
-      ],
-      "indexes": [],
-      "color": "#ff6b8a",
-      "createdAt": 1755817182901,
-      "isView": false,
-      "order": 1
-    },
-    {
-      "id": "12",
-      "name": "set_cards",
-      "x": 247,
-      "y": 512,
-      "fields": [
-        {
-          "id": "13",
-          "name": "id",
-          "type": {
-            "id": "uuid",
-            "name": "uuid"
-          },
-          "unique": true,
-          "nullable": false,
-          "primaryKey": true,
-          "createdAt": 1755823797006
-        },
-        {
-          "id": "14",
           "name": "scryfall_id",
           "type": {
             "id": "uuid",
@@ -166,27 +94,15 @@
           },
           "unique": true,
           "nullable": false,
-          "primaryKey": false,
+          "primaryKey": true,
           "createdAt": 1755823837733
         },
         {
-          "id": "15",
-          "name": "mtgjson_uuid",
+          "id": "9",
+          "name": "set_id",
           "type": {
             "id": "uuid",
             "name": "uuid"
-          },
-          "unique": true,
-          "nullable": false,
-          "primaryKey": false,
-          "createdAt": 1755823860048
-        },
-        {
-          "id": "16",
-          "name": "set_code",
-          "type": {
-            "id": "text",
-            "name": "text"
           },
           "unique": false,
           "nullable": false,
@@ -194,19 +110,139 @@
           "createdAt": 1755823956979
         },
         {
-          "id": "17",
-          "name": "card_id",
+          "id": "10",
+          "name": "name",
           "type": {
-            "id": "uuid",
-            "name": "uuid"
+            "id": "text",
+            "name": "text"
           },
           "unique": false,
           "nullable": false,
           "primaryKey": false,
-          "createdAt": 1755823976788
+          "createdAt": 1756257254752
+        },
+        {
+          "id": "11",
+          "name": "collector_number",
+          "type": {
+            "id": "text",
+            "name": "text"
+          },
+          "unique": false,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1756257264214
+        },
+        {
+          "id": "12",
+          "name": "color_identity",
+          "type": {
+            "id": "text",
+            "name": "text"
+          },
+          "unique": false,
+          "nullable": true,
+          "primaryKey": false,
+          "createdAt": 1756257286447
+        },
+        {
+          "id": "13",
+          "name": "colors",
+          "type": {
+            "id": "text",
+            "name": "text"
+          },
+          "unique": false,
+          "nullable": true,
+          "primaryKey": false,
+          "createdAt": 1756257309590
+        },
+        {
+          "id": "14",
+          "name": "language_code",
+          "type": {
+            "id": "text",
+            "name": "text"
+          },
+          "unique": false,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1756257319116
+        },
+        {
+          "id": "15",
+          "name": "spanish_name",
+          "type": {
+            "id": "text",
+            "name": "text"
+          },
+          "unique": false,
+          "nullable": true,
+          "primaryKey": false,
+          "createdAt": 1756257330733
+        },
+        {
+          "id": "16",
+          "name": "rarity",
+          "type": {
+            "id": "text",
+            "name": "text"
+          },
+          "unique": false,
+          "nullable": true,
+          "primaryKey": false,
+          "createdAt": 1756257344876
+        },
+        {
+          "id": "17",
+          "name": "type_line",
+          "type": {
+            "id": "text",
+            "name": "text"
+          },
+          "unique": false,
+          "nullable": true,
+          "primaryKey": false,
+          "createdAt": 1756257362253
         },
         {
           "id": "18",
+          "name": "scryfall_api_uri",
+          "type": {
+            "id": "text",
+            "name": "text"
+          },
+          "unique": false,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1756257372182
+        },
+        {
+          "id": "19",
+          "name": "scryfall_web_uri",
+          "type": {
+            "id": "text",
+            "name": "text"
+          },
+          "unique": false,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1756257386971
+        },
+        {
+          "id": "20",
+          "name": "scryfall_oracle_id",
+          "type": {
+            "id": "text",
+            "name": "text"
+          },
+          "unique": false,
+          "nullable": false,
+          "primaryKey": false,
+          "createdAt": 1756257399854
+        },
+        {
+          "id": "21",
           "name": "created_at",
           "type": {
             "id": "timestamp",
@@ -218,7 +254,7 @@
           "createdAt": 1755824011628
         },
         {
-          "id": "19",
+          "id": "22",
           "name": "updated_at",
           "type": {
             "id": "timestamp",
@@ -234,31 +270,21 @@
       "color": "#ff6363",
       "createdAt": 1755823797006,
       "isView": false,
-      "order": 2
+      "order": 2,
+      "diagramId": "iu4lpanyfkyd"
     }
   ],
   "relationships": [
     {
-      "id": "20",
-      "name": "set_cards_set_code_fk",
-      "sourceTableId": "12",
+      "id": "23",
+      "name": "cards_set_id_fk",
+      "sourceTableId": "7",
       "targetTableId": "1",
-      "sourceFieldId": "16",
+      "sourceFieldId": "9",
       "targetFieldId": "2",
       "sourceCardinality": "many",
       "targetCardinality": "one",
-      "createdAt": 1755824080601
-    },
-    {
-      "id": "21",
-      "name": "set_cards_card_id_fk",
-      "sourceTableId": "12",
-      "targetTableId": "6",
-      "sourceFieldId": "17",
-      "targetFieldId": "7",
-      "sourceCardinality": "many",
-      "targetCardinality": "one",
-      "createdAt": 1755824106873
+      "createdAt": 1756257432226
     }
   ],
   "dependencies": [],

@@ -29,8 +29,18 @@ func (r *iteratorForInsertCards) Next() bool {
 
 func (r iteratorForInsertCards) Values() ([]interface{}, error) {
 	return []interface{}{
-		r.rows[0].ID,
+		r.rows[0].ScryfallID,
+		r.rows[0].SetID,
 		r.rows[0].Name,
+		r.rows[0].CollectorNumber,
+		r.rows[0].ColorIdentity,
+		r.rows[0].Colors,
+		r.rows[0].LanguageCode,
+		r.rows[0].SpanishName,
+		r.rows[0].Rarity,
+		r.rows[0].TypeLine,
+		r.rows[0].ScryfallApiUri,
+		r.rows[0].ScryfallWebUri,
 		r.rows[0].ScryfallOracleID,
 		r.rows[0].CreatedAt,
 		r.rows[0].UpdatedAt,
@@ -42,7 +52,7 @@ func (r iteratorForInsertCards) Err() error {
 }
 
 func (q *Queries) InsertCards(ctx context.Context, arg []InsertCardsParams) (int64, error) {
-	return q.db.CopyFrom(ctx, []string{"cards"}, []string{"id", "name", "scryfall_oracle_id", "created_at", "updated_at"}, &iteratorForInsertCards{rows: arg})
+	return q.db.CopyFrom(ctx, []string{"cards"}, []string{"scryfall_id", "set_id", "name", "collector_number", "color_identity", "colors", "language_code", "spanish_name", "rarity", "type_line", "scryfall_api_uri", "scryfall_web_uri", "scryfall_oracle_id", "created_at", "updated_at"}, &iteratorForInsertCards{rows: arg})
 }
 
 // iteratorForInsertSets implements pgx.CopyFromSource.
@@ -65,6 +75,7 @@ func (r *iteratorForInsertSets) Next() bool {
 
 func (r iteratorForInsertSets) Values() ([]interface{}, error) {
 	return []interface{}{
+		r.rows[0].ScryfallID,
 		r.rows[0].Code,
 		r.rows[0].Name,
 		r.rows[0].CreatedAt,
@@ -77,5 +88,5 @@ func (r iteratorForInsertSets) Err() error {
 }
 
 func (q *Queries) InsertSets(ctx context.Context, arg []InsertSetsParams) (int64, error) {
-	return q.db.CopyFrom(ctx, []string{"sets"}, []string{"code", "name", "created_at", "updated_at"}, &iteratorForInsertSets{rows: arg})
+	return q.db.CopyFrom(ctx, []string{"sets"}, []string{"scryfall_id", "code", "name", "created_at", "updated_at"}, &iteratorForInsertSets{rows: arg})
 }

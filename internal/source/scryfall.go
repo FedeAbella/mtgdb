@@ -57,8 +57,8 @@ func (sfCard *ScryfallCard) unpack() (Set, CardPrinting) {
 			ScryfallAPIURI:   sfCard.ScryfallAPIURI,
 			ScryfallId:       sfCard.ScryfallId,
 			ScryfallOracleId: sfCard.ScryfallOracleId,
-			ScryfallSetId:    sfCard.ScryfallSetId,
 			ScryfallWebURI:   sfCard.ScryfallWebURI,
+			SetScryfallId:    sfCard.ScryfallSetId,
 			TypeLine:         sfCard.TypeLine,
 		}
 }

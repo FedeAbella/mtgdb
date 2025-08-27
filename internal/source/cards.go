@@ -19,7 +19,7 @@ type CardPrinting struct {
 	ScryfallAPIURI   string
 	ScryfallId       uuid.UUID
 	ScryfallOracleId uuid.UUID
-	ScryfallSetId    uuid.UUID
 	ScryfallWebURI   string
+	SetScryfallId    uuid.UUID
 	TypeLine         string
 }

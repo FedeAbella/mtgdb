@@ -10,8 +10,18 @@ import (
 )
 
 type InsertCardsParams struct {
-	ID               pgtype.UUID
+	ScryfallID       pgtype.UUID
+	SetID            pgtype.UUID
 	Name             string
+	CollectorNumber  string
+	ColorIdentity    pgtype.Text
+	Colors           pgtype.Text
+	LanguageCode     string
+	SpanishName      pgtype.Text
+	Rarity           pgtype.Text
+	TypeLine         pgtype.Text
+	ScryfallApiUri   string
+	ScryfallWebUri   string
 	ScryfallOracleID pgtype.UUID
 	CreatedAt        pgtype.Timestamp
 	UpdatedAt        pgtype.Timestamp

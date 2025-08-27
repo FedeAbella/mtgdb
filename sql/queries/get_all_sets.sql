@@ -3,4 +3,4 @@ SELECT
     *
 FROM
     sets
-ORDER BY name ASC;
+ORDER BY code ASC;

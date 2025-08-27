@@ -9,27 +9,27 @@ import (
 )
 
 type Card struct {
-	ID               pgtype.UUID
-	ScryfallOracleID pgtype.UUID
+	ScryfallID       pgtype.UUID
+	SetID            pgtype.UUID
 	Name             string
+	CollectorNumber  string
+	ColorIdentity    pgtype.Text
+	Colors           pgtype.Text
+	LanguageCode     string
+	SpanishName      pgtype.Text
+	Rarity           pgtype.Text
+	TypeLine         pgtype.Text
+	ScryfallApiUri   string
+	ScryfallWebUri   string
+	ScryfallOracleID pgtype.UUID
 	CreatedAt        pgtype.Timestamp
 	UpdatedAt        pgtype.Timestamp
 }
 
 type Set struct {
-	Code      string
-	Name      string
-	CreatedAt pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
-}
-
-type SetCard struct {
-	ID          pgtype.UUID
-	ScryfallID  pgtype.UUID
-	MtgjsonUuid pgtype.UUID
-	MtgjsonV4ID pgtype.UUID
-	SetCode     string
-	CardID      pgtype.UUID
-	CreatedAt   pgtype.Timestamp
-	UpdatedAt   pgtype.Timestamp
+	ScryfallID pgtype.UUID
+	Code       string
+	Name       string
+	CreatedAt  pgtype.Timestamp
+	UpdatedAt  pgtype.Timestamp
 }
