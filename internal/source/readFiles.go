@@ -1,94 +1,57 @@
 package source
 
 import (
-	"bytes"
 	"encoding/json"
 	"log"
-	"maps"
-	"os/exec"
-	"slices"
+	"time"
 
 	"github.com/google/uuid"
 )
 
-func RunJQCmd(filepath string, jqFilter string) ([]byte, error) {
-	jqCmd := exec.Command("jq", jqFilter, filepath)
-	jqOutBuf := bytes.Buffer{}
-	jqErrBuf := bytes.Buffer{}
-	jqCmd.Stdout = &jqOutBuf
-	err := jqCmd.Run()
-
+func readScryfallCardsFile() ([]ScryfallCard, error) {
+	jqBytes, err := runJQCmd(allScryfallCards.JQFilter, allScryfallCards.Path)
 	if err != nil {
-		log.Println(jqErrBuf.String())
 		log.Println(err)
-		return []byte{}, err
+		return make([]ScryfallCard, 0), err
 	}
 
-	return jqOutBuf.Bytes(), nil
+	var sfCards []ScryfallCard
+	err = json.Unmarshal(jqBytes, &sfCards)
+	if err != nil {
+		log.Println(err)
+		return make([]ScryfallCard, 0), err
+	}
+
+	return sfCards, nil
 }
 
-func ReadSetList() (AllSets, error) {
-	jqBytes, err := RunJQCmd(allSets.Path, allSets.JQFilter)
+func GetScryfallData() (map[uuid.UUID]Set, map[uuid.UUID]CardPrinting, error) {
+	readStart := time.Now()
+	sfCards, err := readScryfallCardsFile()
 	if err != nil {
 		log.Println(err)
-		return AllSets{}, err
+		return map[uuid.UUID]Set{}, map[uuid.UUID]CardPrinting{}, err
+	}
+	log.Printf(
+		"Read scryfall file, found %d objects in %.3f seconds",
+		len(sfCards),
+		time.Since(readStart).Seconds(),
+	)
+
+	setMap := make(map[uuid.UUID]Set)
+	printMap := make(map[uuid.UUID]CardPrinting)
+
+	for _, sfCard := range sfCards {
+		set, printing := sfCard.unpack()
+		setMap[set.ScryfallId] = set
+		printMap[printing.ScryfallId] = printing
 	}
 
-	var allSets AllSets
-	err = json.Unmarshal(jqBytes, &allSets)
-	if err != nil {
-		log.Println(err)
-		return AllSets{}, err
-	}
+	log.Printf(
+		"Unpacked Scryfall data into %d sets and %d printings",
+		len(setMap),
+		len(printMap),
+	)
 
-	return allSets, nil
-}
-
-func ReadAtomicCards() (AllAtomicCards, error) {
-	jqBytes, err := RunJQCmd(allAtomicCards.Path, allAtomicCards.JQFilter)
-	if err != nil {
-		log.Println(err)
-		return AllAtomicCards{}, err
-	}
-
-	var allCards AllAtomicCards
-	err = json.Unmarshal(jqBytes, &allCards)
-	if err != nil {
-		log.Println(err)
-		return AllAtomicCards{}, err
-	}
-
-	filteredCards := make(map[uuid.UUID]AtomicCard)
-
-	for _, card := range allCards.Data {
-		_, seen := filteredCards[card.Identifiers.ScryfallOracleId]
-		if seen && card.Layout == "reversible_card" {
-			continue
-		}
-
-		filteredCards[card.Identifiers.ScryfallOracleId] = card
-	}
-
-	uniqueCards := AllAtomicCards{}
-	uniqueCards.Meta = allCards.Meta
-	uniqueCards.Data = slices.Collect(maps.Values(filteredCards))
-
-	return uniqueCards, nil
-}
-
-func ReadSetCards() (AllSetCards, error) {
-	jqBytes, err := RunJQCmd(allSetCards.Path, allSetCards.JQFilter)
-	if err != nil {
-		log.Println(err)
-		return AllSetCards{}, err
-	}
-
-	var allCards AllSetCards
-	err = json.Unmarshal(jqBytes, &allCards)
-	if err != nil {
-		log.Println(err)
-		return AllSetCards{}, err
-	}
-
-	return allCards, nil
+	return setMap, printMap, nil
 }
