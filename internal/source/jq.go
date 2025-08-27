@@ -16,8 +16,8 @@ var allScryfallCards jqFileConfig = jqFileConfig{
 	JQFilter: "map(select((any(.games[]; . == \"paper\")) and (.lang == \"en\" or .lang == \"es\")))",
 }
 
-func RunJQCmd(jqFile jqFileConfig) ([]byte, error) {
-	jqCmd := exec.Command("jq", jqFile.JQFilter, jqFile.Path)
+func runJQCmd(filePath string, jqFilter string) ([]byte, error) {
+	jqCmd := exec.Command("jq", jqFilter, filePath)
 	jqOutBuf := bytes.Buffer{}
 	jqErrBuf := bytes.Buffer{}
 	jqCmd.Stdout = &jqOutBuf

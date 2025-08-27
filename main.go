@@ -27,7 +27,10 @@ func main() {
 		Queries: sqlc.New(conn),
 	}
 
-	source.GetScryfallData()
+	_, _, err = source.GetScryfallData()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	db.UpdateSets()
 	db.UpdateCards()

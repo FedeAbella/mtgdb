@@ -9,7 +9,7 @@ import (
 )
 
 func readScryfallCardsFile() ([]ScryfallCard, error) {
-	jqBytes, err := RunJQCmd(allScryfallCards)
+	jqBytes, err := runJQCmd(allScryfallCards.JQFilter, allScryfallCards.Path)
 	if err != nil {
 		log.Println(err)
 		return make([]ScryfallCard, 0), err
