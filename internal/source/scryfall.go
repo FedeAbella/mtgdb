@@ -9,12 +9,27 @@ import (
 	"github.com/google/uuid"
 )
 
-type LanguageCode string
+type LanguageCode = string
+type Color = string
+type Rarity = string
 
 const (
 	English   LanguageCode = "en"
 	Spanish   LanguageCode = "es"
 	GamePaper string       = "paper"
+
+	White Color = "W"
+	Blue  Color = "U"
+	Black Color = "B"
+	Red   Color = "R"
+	Green Color = "G"
+
+	Common   = "common"
+	Uncommon = "uncommon"
+	Rare     = "rare"
+	Special  = "special"
+	Mythic   = "mythic"
+	Bonus    = "bonus"
 )
 
 type ScryfallCardFace struct {
@@ -25,14 +40,14 @@ type ScryfallCardFace struct {
 type ScryfallCard struct {
 	CMC              float32            `json:"cmc"`
 	CollectorNumber  string             `json:"collector_number"`
-	ColorIdentity    []string           `json:"color_identity"`
-	Colors           []string           `json:"colors"`
+	ColorIdentity    []Color            `json:"color_identity"`
+	Colors           []Color            `json:"colors"`
 	Faces            []ScryfallCardFace `json:"card_faces"`
 	Games            []string           `json:"games"`
 	LanguageCode     LanguageCode       `json:"lang"`
 	Name             string             `json:"name"`
 	PrintedName      string             `json:"printed_name"`
-	Rarity           string             `json:"rarity"`
+	Rarity           Rarity             `json:"rarity"`
 	ScryfallAPIURI   string             `json:"uri"`
 	ScryfallId       uuid.UUID          `json:"id"`
 	ScryfallOracleId uuid.UUID          `json:"oracle_id"`
@@ -66,7 +81,6 @@ func (sfCard *ScryfallCard) unpack() (Set, CardPrinting) {
 }
 
 func (sfCard *ScryfallCard) getColors() string {
-
 	if len(sfCard.Colors) > 0 {
 		return strings.Join(sfCard.Colors, "")
 	}
@@ -75,7 +89,7 @@ func (sfCard *ScryfallCard) getColors() string {
 		return ""
 	}
 
-	faceColors := make([]string, 0)
+	faceColors := make([]Color, 0)
 	faceColors = append(faceColors, sfCard.Faces[0].Colors...)
 	faceColors = append(faceColors, sfCard.Faces[1].Colors...)
 	if len(faceColors) == 0 {
