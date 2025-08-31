@@ -115,3 +115,26 @@ func (sfCard *ScryfallCard) getSpanishName() string {
 
 	return fmt.Sprintf("%s // %s", sfCard.Faces[0].PrintedName, sfCard.Faces[1].PrintedName)
 }
+
+func scryfallToSetsCards(
+	sfCards []ScryfallCard,
+) (map[uuid.UUID]Set, map[uuid.UUID]CardPrinting) {
+	setMap := make(map[uuid.UUID]Set)
+	printMap := make(map[uuid.UUID]CardPrinting)
+
+	for _, sfCard := range sfCards {
+		if !slices.Contains(sfCard.Games, GamePaper) {
+			continue
+		}
+
+		if sfCard.LanguageCode != English && sfCard.LanguageCode != Spanish {
+			continue
+		}
+
+		set, printing := sfCard.unpack()
+		setMap[set.ScryfallId] = set
+		printMap[printing.ScryfallId] = printing
+	}
+
+	return setMap, printMap
+}
