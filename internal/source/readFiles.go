@@ -3,26 +3,53 @@ package source
 import (
 	"encoding/json"
 	"log"
+	"os"
+	"slices"
 	"time"
 
 	"github.com/google/uuid"
 )
 
+const SCRYFALL_ALL_CARDS_PATH = "./src/all-cards.json"
+
 func readScryfallCardsFile() ([]ScryfallCard, error) {
-	jqBytes, err := runJQCmd(allScryfallCards.JQFilter, allScryfallCards.Path)
+	file, err := os.Open(SCRYFALL_ALL_CARDS_PATH)
 	if err != nil {
 		log.Println(err)
-		return make([]ScryfallCard, 0), err
 	}
+	defer file.Close()
 
-	var sfCards []ScryfallCard
-	err = json.Unmarshal(jqBytes, &sfCards)
+	cards := make([]ScryfallCard, 0)
+	decoder := json.NewDecoder(file)
+	_, err = decoder.Token()
 	if err != nil {
 		log.Println(err)
-		return make([]ScryfallCard, 0), err
 	}
 
-	return sfCards, nil
+	for decoder.More() {
+		var card ScryfallCard
+		err := decoder.Decode(&card)
+		if err != nil {
+			log.Println(err)
+		}
+
+		if !slices.Contains(card.Games, GamePaper) {
+			continue
+		}
+
+		if card.LanguageCode != English && card.LanguageCode != Spanish {
+			continue
+		}
+
+		cards = append(cards, card)
+	}
+
+	_, err = decoder.Token()
+	if err != nil {
+		log.Println(err)
+	}
+
+	return cards, nil
 }
 
 func GetScryfallData() (map[uuid.UUID]Set, map[uuid.UUID]CardPrinting, error) {

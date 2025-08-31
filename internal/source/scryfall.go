@@ -12,8 +12,9 @@ import (
 type LanguageCode string
 
 const (
-	English LanguageCode = "en"
-	Spanish LanguageCode = "es"
+	English   LanguageCode = "en"
+	Spanish   LanguageCode = "es"
+	GamePaper string       = "paper"
 )
 
 type ScryfallCardFace struct {
@@ -27,6 +28,7 @@ type ScryfallCard struct {
 	ColorIdentity    []string           `json:"color_identity"`
 	Colors           []string           `json:"colors"`
 	Faces            []ScryfallCardFace `json:"card_faces"`
+	Games            []string           `json:"games"`
 	LanguageCode     LanguageCode       `json:"lang"`
 	Name             string             `json:"name"`
 	PrintedName      string             `json:"printed_name"`
