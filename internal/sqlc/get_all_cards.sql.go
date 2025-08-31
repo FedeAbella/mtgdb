@@ -7,50 +7,25 @@ package sqlc
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const getAllCards = `-- name: GetAllCards :many
 SELECT
-    c.scryfall_id, c.set_id, c.name, c.collector_number, c.color_identity, c.colors, c.language_code, c.spanish_name, c.rarity, c.type_line, c.scryfall_api_uri, c.scryfall_web_uri, c.scryfall_oracle_id, c.created_at, c.updated_at,
-    s.code set_code,
-    s.name set_name
+    scryfall_id, set_id, name, collector_number, color_identity, colors, language_code, spanish_name, rarity, type_line, scryfall_api_uri, scryfall_web_uri, scryfall_oracle_id, created_at, updated_at
 FROM
     cards c
-INNER JOIN sets s ON c.set_id = s.scryfall_id
-ORDER BY set_code, set_name ASC
+ORDER BY name ASC
 `
 
-type GetAllCardsRow struct {
-	ScryfallID       pgtype.UUID
-	SetID            pgtype.UUID
-	Name             string
-	CollectorNumber  string
-	ColorIdentity    pgtype.Text
-	Colors           pgtype.Text
-	LanguageCode     string
-	SpanishName      pgtype.Text
-	Rarity           pgtype.Text
-	TypeLine         pgtype.Text
-	ScryfallApiUri   string
-	ScryfallWebUri   string
-	ScryfallOracleID pgtype.UUID
-	CreatedAt        pgtype.Timestamp
-	UpdatedAt        pgtype.Timestamp
-	SetCode          string
-	SetName          string
-}
-
-func (q *Queries) GetAllCards(ctx context.Context) ([]GetAllCardsRow, error) {
+func (q *Queries) GetAllCards(ctx context.Context) ([]Card, error) {
 	rows, err := q.db.Query(ctx, getAllCards)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetAllCardsRow
+	var items []Card
 	for rows.Next() {
-		var i GetAllCardsRow
+		var i Card
 		if err := rows.Scan(
 			&i.ScryfallID,
 			&i.SetID,
@@ -67,8 +42,6 @@ func (q *Queries) GetAllCards(ctx context.Context) ([]GetAllCardsRow, error) {
 			&i.ScryfallOracleID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
-			&i.SetCode,
-			&i.SetName,
 		); err != nil {
 			return nil, err
 		}
