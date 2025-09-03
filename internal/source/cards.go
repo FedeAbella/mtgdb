@@ -34,7 +34,7 @@ func (s *Set) Equals(dbSet *sqlc.Set) bool {
 
 func (c *CardPrinting) Equals(dbCard *sqlc.Card) bool {
 	return c.CollectorNumber == dbCard.CollectorNumber &&
-		c.ColorIdentity == dbCard.CollectorNumber &&
+		c.ColorIdentity == dbCard.ColorIdentity.String &&
 		c.Colors == dbCard.Colors.String &&
 		c.Language == dbCard.LanguageCode &&
 		c.Name == dbCard.Name &&
