@@ -22,9 +22,9 @@ func main() {
 	defer conn.Close(context.Background())
 
 	db := db.DbConf{
-
+		Conn:    conn,
 		Queries: sqlc.New(conn),
 	}
 
-	db.UpdateSetsAndCards()
+	db.UpsertSetsAndCards()
 }

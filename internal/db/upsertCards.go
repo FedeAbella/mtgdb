@@ -1,0 +1,211 @@
+package db
+
+import (
+	"context"
+	"log"
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
+
+	"FedeAbella/mtgdb/internal/source"
+	"FedeAbella/mtgdb/internal/sqlc"
+)
+
+func buildCardsToInsertAndUpdate(
+	fileCardMap map[uuid.UUID]source.CardPrinting,
+	dbCards []sqlc.Card,
+) ([]sqlc.InsertCardsParams, []sqlc.UpdateCardParams) {
+	dbCardMap := map[string]sqlc.Card{}
+	for _, dbCard := range dbCards {
+		dbCardMap[dbCard.ScryfallID.String()] = dbCard
+	}
+
+	cardsToInsert := make([]sqlc.InsertCardsParams, 0)
+	cardsToUpdate := make([]sqlc.UpdateCardParams, 0)
+
+	for fileCardId, fileCard := range fileCardMap {
+		dbCard, inDb := dbCardMap[fileCardId.String()]
+		if !inDb {
+			cardsToInsert = append(cardsToInsert, sqlc.InsertCardsParams{
+				ScryfallID: pgtype.UUID{
+					Bytes: fileCard.ScryfallId,
+					Valid: true,
+				},
+				SetID: pgtype.UUID{
+					Bytes: fileCard.SetScryfallId,
+					Valid: true,
+				},
+				Name:            fileCard.Name,
+				CollectorNumber: fileCard.CollectorNumber,
+				ColorIdentity: pgtype.Text{
+					String: fileCard.ColorIdentity,
+					Valid:  fileCard.ColorIdentity != "",
+				},
+				Colors: pgtype.Text{
+					String: fileCard.Colors,
+					Valid:  fileCard.Colors != "",
+				},
+				LanguageCode: fileCard.Language,
+				SpanishName: pgtype.Text{
+					String: fileCard.NameSPA,
+					Valid:  fileCard.NameSPA != "",
+				},
+				Rarity: pgtype.Text{
+					String: fileCard.Rarity,
+					Valid:  fileCard.Rarity != "",
+				},
+				TypeLine: pgtype.Text{
+					String: fileCard.TypeLine,
+					Valid:  fileCard.TypeLine != "",
+				},
+				ScryfallApiUri: fileCard.ScryfallAPIURI,
+				ScryfallWebUri: fileCard.ScryfallWebURI,
+				ScryfallOracleID: pgtype.UUID{
+					Bytes: fileCard.ScryfallOracleId,
+					Valid: true,
+				},
+				CreatedAt: pgtype.Timestamp{
+					Time:  time.Now(),
+					Valid: true,
+				},
+				UpdatedAt: pgtype.Timestamp{
+					Time:  time.Now(),
+					Valid: true,
+				},
+			})
+			continue
+		}
+
+		if !fileCard.Equals(&dbCard) {
+			cardsToUpdate = append(cardsToUpdate, sqlc.UpdateCardParams{
+				ScryfallID: pgtype.UUID{
+					Bytes: fileCard.ScryfallId,
+					Valid: true,
+				},
+				SetID: pgtype.UUID{
+					Bytes: fileCard.SetScryfallId,
+					Valid: true,
+				},
+				Name:            fileCard.Name,
+				CollectorNumber: fileCard.CollectorNumber,
+				ColorIdentity: pgtype.Text{
+					String: fileCard.ColorIdentity,
+					Valid:  fileCard.ColorIdentity != "",
+				},
+				Colors: pgtype.Text{
+					String: fileCard.Colors,
+					Valid:  fileCard.Colors != "",
+				},
+				LanguageCode: fileCard.Language,
+				SpanishName: pgtype.Text{
+					String: fileCard.NameSPA,
+					Valid:  fileCard.NameSPA != "",
+				},
+				Rarity: pgtype.Text{
+					String: fileCard.Rarity,
+					Valid:  fileCard.Rarity != "",
+				},
+				TypeLine: pgtype.Text{
+					String: fileCard.TypeLine,
+					Valid:  fileCard.TypeLine != "",
+				},
+				ScryfallApiUri: fileCard.ScryfallAPIURI,
+				ScryfallWebUri: fileCard.ScryfallWebURI,
+				ScryfallOracleID: pgtype.UUID{
+					Bytes: fileCard.ScryfallOracleId,
+					Valid: true,
+				},
+				UpdatedAt: pgtype.Timestamp{
+					Time:  time.Now(),
+					Valid: true,
+				},
+			})
+		}
+	}
+
+	return cardsToInsert, cardsToUpdate
+}
+
+func (db *DbConf) insertCards(cardsToInsert []sqlc.InsertCardsParams) error {
+	if len(cardsToInsert) == 0 {
+		return nil
+	}
+
+	insertStart := time.Now()
+	if _, err := db.Queries.InsertCards(context.Background(), cardsToInsert); err != nil {
+		log.Println(err)
+		return err
+	}
+
+	log.Printf(
+		"inserted %d cards into db in %.3f seconds",
+		len(cardsToInsert),
+		time.Since(insertStart).Seconds(),
+	)
+
+	return nil
+}
+
+func (db *DbConf) updateCards(cardsToUpdate []sqlc.UpdateCardParams) error {
+	if len(cardsToUpdate) == 0 {
+		return nil
+	}
+
+	tx, err := db.Conn.Begin(context.Background())
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	defer tx.Rollback(context.Background())
+
+	txq := db.Queries.WithTx(tx)
+	log.Println("Starting db card update transaction")
+
+	updateStart := time.Now()
+	for _, card := range cardsToUpdate {
+		if err := txq.UpdateCard(context.Background(), card); err != nil {
+			log.Println(err)
+			return err
+		}
+	}
+
+	if err = tx.Commit(context.Background()); err != nil {
+		log.Println(err)
+		return err
+	}
+
+	log.Printf(
+		"updated %d cards into db in %.3f seconds",
+		len(cardsToUpdate),
+		time.Since(updateStart).Seconds(),
+	)
+
+	return nil
+}
+
+func (db *DbConf) upsertCards(fileCardMap map[uuid.UUID]source.CardPrinting) error {
+
+	dbCards, err := db.Queries.GetAllCards(context.Background())
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	cardsToInsert, cardsToUpdate := buildCardsToInsertAndUpdate(fileCardMap, dbCards)
+
+	log.Printf("%d cards to be inserted in db", len(cardsToInsert))
+	log.Printf("%d cards to be updated in db", len(cardsToUpdate))
+
+	if err = db.insertCards(cardsToInsert); err != nil {
+		log.Println(err)
+		return err
+	}
+
+	if err = db.updateCards(cardsToUpdate); err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
+}
