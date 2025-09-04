@@ -26,5 +26,7 @@ func main() {
 		Queries: sqlc.New(conn),
 	}
 
-	db.UpsertSetsAndCards()
+	if err = db.UpsertSetsAndCards(); err != nil {
+		log.Fatal(err)
+	}
 }
