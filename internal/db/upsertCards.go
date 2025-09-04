@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 
 	"FedeAbella/mtgdb/internal/source"
 	"FedeAbella/mtgdb/internal/sqlc"
@@ -27,100 +26,12 @@ func buildCardsToInsertAndUpdate(
 	for fileCardId, fileCard := range fileCardMap {
 		dbCard, inDb := dbCardMap[fileCardId.String()]
 		if !inDb {
-			cardsToInsert = append(cardsToInsert, sqlc.InsertCardsParams{
-				ScryfallID: pgtype.UUID{
-					Bytes: fileCard.ScryfallId,
-					Valid: true,
-				},
-				SetID: pgtype.UUID{
-					Bytes: fileCard.SetScryfallId,
-					Valid: true,
-				},
-				Name:            fileCard.Name,
-				CollectorNumber: fileCard.CollectorNumber,
-				ColorIdentity: pgtype.Text{
-					String: fileCard.ColorIdentity,
-					Valid:  fileCard.ColorIdentity != "",
-				},
-				Colors: pgtype.Text{
-					String: fileCard.Colors,
-					Valid:  fileCard.Colors != "",
-				},
-				LanguageCode: fileCard.Language,
-				SpanishName: pgtype.Text{
-					String: fileCard.NameSPA,
-					Valid:  fileCard.NameSPA != "",
-				},
-				Rarity: pgtype.Text{
-					String: fileCard.Rarity,
-					Valid:  fileCard.Rarity != "",
-				},
-				TypeLine: pgtype.Text{
-					String: fileCard.TypeLine,
-					Valid:  fileCard.TypeLine != "",
-				},
-				ScryfallApiUri: fileCard.ScryfallAPIURI,
-				ScryfallWebUri: fileCard.ScryfallWebURI,
-				ScryfallOracleID: pgtype.UUID{
-					Bytes: fileCard.ScryfallOracleId,
-					Valid: true,
-				},
-				CreatedAt: pgtype.Timestamp{
-					Time:  time.Now(),
-					Valid: true,
-				},
-				UpdatedAt: pgtype.Timestamp{
-					Time:  time.Now(),
-					Valid: true,
-				},
-			})
+			cardsToInsert = append(cardsToInsert, fileCard.ToDbInsertCard())
 			continue
 		}
 
 		if !fileCard.Equals(&dbCard) {
-			cardsToUpdate = append(cardsToUpdate, sqlc.UpdateCardParams{
-				ScryfallID: pgtype.UUID{
-					Bytes: fileCard.ScryfallId,
-					Valid: true,
-				},
-				SetID: pgtype.UUID{
-					Bytes: fileCard.SetScryfallId,
-					Valid: true,
-				},
-				Name:            fileCard.Name,
-				CollectorNumber: fileCard.CollectorNumber,
-				ColorIdentity: pgtype.Text{
-					String: fileCard.ColorIdentity,
-					Valid:  fileCard.ColorIdentity != "",
-				},
-				Colors: pgtype.Text{
-					String: fileCard.Colors,
-					Valid:  fileCard.Colors != "",
-				},
-				LanguageCode: fileCard.Language,
-				SpanishName: pgtype.Text{
-					String: fileCard.NameSPA,
-					Valid:  fileCard.NameSPA != "",
-				},
-				Rarity: pgtype.Text{
-					String: fileCard.Rarity,
-					Valid:  fileCard.Rarity != "",
-				},
-				TypeLine: pgtype.Text{
-					String: fileCard.TypeLine,
-					Valid:  fileCard.TypeLine != "",
-				},
-				ScryfallApiUri: fileCard.ScryfallAPIURI,
-				ScryfallWebUri: fileCard.ScryfallWebURI,
-				ScryfallOracleID: pgtype.UUID{
-					Bytes: fileCard.ScryfallOracleId,
-					Valid: true,
-				},
-				UpdatedAt: pgtype.Timestamp{
-					Time:  time.Now(),
-					Valid: true,
-				},
-			})
+			cardsToUpdate = append(cardsToUpdate, fileCard.ToDbUpdateCard())
 		}
 	}
 

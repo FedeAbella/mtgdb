@@ -1,16 +1,13 @@
 package source
 
 import (
+	"time"
+
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 
 	"FedeAbella/mtgdb/internal/sqlc"
 )
-
-type Set struct {
-	Code       string
-	Name       string
-	ScryfallId uuid.UUID
-}
 
 type CardPrinting struct {
 	CollectorNumber  string
@@ -28,10 +25,6 @@ type CardPrinting struct {
 	TypeLine         string
 }
 
-func (s *Set) Equals(dbSet *sqlc.Set) bool {
-	return s.ScryfallId == dbSet.ScryfallID.Bytes && s.Code == dbSet.Code && s.Name == dbSet.Name
-}
-
 func (c *CardPrinting) Equals(dbCard *sqlc.Card) bool {
 	return c.CollectorNumber == dbCard.CollectorNumber &&
 		c.ColorIdentity == dbCard.ColorIdentity.String &&
@@ -46,4 +39,100 @@ func (c *CardPrinting) Equals(dbCard *sqlc.Card) bool {
 		c.ScryfallWebURI == dbCard.ScryfallWebUri &&
 		c.SetScryfallId == dbCard.SetID.Bytes &&
 		c.TypeLine == dbCard.TypeLine.String
+}
+
+func (c *CardPrinting) ToDbInsertCard() sqlc.InsertCardsParams {
+	return sqlc.InsertCardsParams{
+		ScryfallID: pgtype.UUID{
+			Bytes: c.ScryfallId,
+			Valid: true,
+		},
+		SetID: pgtype.UUID{
+			Bytes: c.SetScryfallId,
+			Valid: true,
+		},
+		Name:            c.Name,
+		CollectorNumber: c.CollectorNumber,
+		ColorIdentity: pgtype.Text{
+			String: c.ColorIdentity,
+			Valid:  c.ColorIdentity != "",
+		},
+		Colors: pgtype.Text{
+			String: c.Colors,
+			Valid:  c.Colors != "",
+		},
+		LanguageCode: c.Language,
+		SpanishName: pgtype.Text{
+			String: c.NameSPA,
+			Valid:  c.NameSPA != "",
+		},
+		Rarity: pgtype.Text{
+			String: c.Rarity,
+			Valid:  c.Rarity != "",
+		},
+		TypeLine: pgtype.Text{
+			String: c.TypeLine,
+			Valid:  c.TypeLine != "",
+		},
+		ScryfallApiUri: c.ScryfallAPIURI,
+		ScryfallWebUri: c.ScryfallWebURI,
+		ScryfallOracleID: pgtype.UUID{
+			Bytes: c.ScryfallOracleId,
+			Valid: true,
+		},
+		CreatedAt: pgtype.Timestamp{
+			Time:  time.Now(),
+			Valid: true,
+		},
+		UpdatedAt: pgtype.Timestamp{
+			Time:  time.Now(),
+			Valid: true,
+		},
+	}
+}
+
+func (c *CardPrinting) ToDbUpdateCard() sqlc.UpdateCardParams {
+	return sqlc.UpdateCardParams{
+		ScryfallID: pgtype.UUID{
+			Bytes: c.ScryfallId,
+			Valid: true,
+		},
+		SetID: pgtype.UUID{
+			Bytes: c.SetScryfallId,
+			Valid: true,
+		},
+		Name:            c.Name,
+		CollectorNumber: c.CollectorNumber,
+		ColorIdentity: pgtype.Text{
+			String: c.ColorIdentity,
+			Valid:  c.ColorIdentity != "",
+		},
+		Colors: pgtype.Text{
+			String: c.Colors,
+			Valid:  c.Colors != "",
+		},
+		LanguageCode: c.Language,
+		SpanishName: pgtype.Text{
+			String: c.NameSPA,
+			Valid:  c.NameSPA != "",
+		},
+		Rarity: pgtype.Text{
+			String: c.Rarity,
+			Valid:  c.Rarity != "",
+		},
+		TypeLine: pgtype.Text{
+			String: c.TypeLine,
+			Valid:  c.TypeLine != "",
+		},
+		ScryfallApiUri: c.ScryfallAPIURI,
+		ScryfallWebUri: c.ScryfallWebURI,
+		ScryfallOracleID: pgtype.UUID{
+			Bytes: c.ScryfallOracleId,
+			Valid: true,
+		},
+		UpdatedAt: pgtype.Timestamp{
+			Time:  time.Now(),
+			Valid: true,
+		},
+	}
 }

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 
 	"FedeAbella/mtgdb/internal/source"
 	"FedeAbella/mtgdb/internal/sqlc"
@@ -27,35 +26,12 @@ func buildSetsToInsertAndUpdate(
 	for fileSetID, fileSet := range fileSetMap {
 		dbSet, inDb := dbSetMap[fileSetID.String()]
 		if !inDb {
-			setsToInsert = append(setsToInsert, sqlc.InsertSetsParams{
-				ScryfallID: pgtype.UUID{
-					Bytes: fileSet.ScryfallId,
-					Valid: true,
-				},
-				Code: fileSet.Code,
-				Name: fileSet.Name,
-				CreatedAt: pgtype.Timestamp{
-					Time:  time.Now(),
-					Valid: true,
-				},
-				UpdatedAt: pgtype.Timestamp{
-					Time:  time.Now(),
-					Valid: true,
-				},
-			})
+			setsToInsert = append(setsToInsert, fileSet.ToDbInsertSet())
 			continue
 		}
 
 		if !fileSet.Equals(&dbSet) {
-			setsToUpdate = append(setsToUpdate, sqlc.UpdateSetParams{
-				ScryfallID: dbSet.ScryfallID,
-				Code:       fileSet.Code,
-				Name:       fileSet.Name,
-				UpdatedAt: pgtype.Timestamp{
-					Time:  time.Now(),
-					Valid: true,
-				},
-			})
+			setsToUpdate = append(setsToUpdate, fileSet.ToDbUpdateSet())
 		}
 	}
 
