@@ -26,12 +26,12 @@ func buildCardsToInsertAndUpdate(
 	for fileCardId, fileCard := range fileCardMap {
 		dbCard, inDb := dbCardMap[fileCardId.String()]
 		if !inDb {
-			cardsToInsert = append(cardsToInsert, fileCard.ToDbInsertCard())
+			cardsToInsert = append(cardsToInsert, fileCard.ToDbInsertCard(time.Now()))
 			continue
 		}
 
 		if !fileCard.Equals(&dbCard) {
-			cardsToUpdate = append(cardsToUpdate, fileCard.ToDbUpdateCard())
+			cardsToUpdate = append(cardsToUpdate, fileCard.ToDbUpdateCard(time.Now()))
 		}
 	}
 

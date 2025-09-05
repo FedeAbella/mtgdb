@@ -38,10 +38,10 @@ func (c *CardPrinting) Equals(dbCard *sqlc.Card) bool {
 		c.ScryfallOracleId == dbCard.ScryfallOracleID.Bytes &&
 		c.ScryfallWebURI == dbCard.ScryfallWebUri &&
 		c.SetScryfallId == dbCard.SetID.Bytes &&
-		c.TypeLine == dbCard.TypeLine.String
+		c.TypeLine == dbCard.TypeLine
 }
 
-func (c *CardPrinting) ToDbInsertCard() sqlc.InsertCardsParams {
+func (c *CardPrinting) ToDbInsertCard(now time.Time) sqlc.InsertCardsParams {
 	return sqlc.InsertCardsParams{
 		ScryfallID: pgtype.UUID{
 			Bytes: c.ScryfallId,
@@ -70,10 +70,7 @@ func (c *CardPrinting) ToDbInsertCard() sqlc.InsertCardsParams {
 			String: c.Rarity,
 			Valid:  c.Rarity != "",
 		},
-		TypeLine: pgtype.Text{
-			String: c.TypeLine,
-			Valid:  c.TypeLine != "",
-		},
+		TypeLine:       c.TypeLine,
 		ScryfallApiUri: c.ScryfallAPIURI,
 		ScryfallWebUri: c.ScryfallWebURI,
 		ScryfallOracleID: pgtype.UUID{
@@ -81,17 +78,17 @@ func (c *CardPrinting) ToDbInsertCard() sqlc.InsertCardsParams {
 			Valid: true,
 		},
 		CreatedAt: pgtype.Timestamp{
-			Time:  time.Now(),
+			Time:  now,
 			Valid: true,
 		},
 		UpdatedAt: pgtype.Timestamp{
-			Time:  time.Now(),
+			Time:  now,
 			Valid: true,
 		},
 	}
 }
 
-func (c *CardPrinting) ToDbUpdateCard() sqlc.UpdateCardParams {
+func (c *CardPrinting) ToDbUpdateCard(now time.Time) sqlc.UpdateCardParams {
 	return sqlc.UpdateCardParams{
 		ScryfallID: pgtype.UUID{
 			Bytes: c.ScryfallId,
@@ -120,10 +117,7 @@ func (c *CardPrinting) ToDbUpdateCard() sqlc.UpdateCardParams {
 			String: c.Rarity,
 			Valid:  c.Rarity != "",
 		},
-		TypeLine: pgtype.Text{
-			String: c.TypeLine,
-			Valid:  c.TypeLine != "",
-		},
+		TypeLine:       c.TypeLine,
 		ScryfallApiUri: c.ScryfallAPIURI,
 		ScryfallWebUri: c.ScryfallWebURI,
 		ScryfallOracleID: pgtype.UUID{
@@ -131,7 +125,7 @@ func (c *CardPrinting) ToDbUpdateCard() sqlc.UpdateCardParams {
 			Valid: true,
 		},
 		UpdatedAt: pgtype.Timestamp{
-			Time:  time.Now(),
+			Time:  now,
 			Valid: true,
 		},
 	}
