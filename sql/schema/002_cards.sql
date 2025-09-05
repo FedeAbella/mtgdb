@@ -9,7 +9,7 @@ CREATE TABLE cards (
     language_code TEXT NOT NULL,
     spanish_name TEXT,
     rarity TEXT,
-    type_line TEXT,
+    type_line TEXT NOT NULL,
     scryfall_api_uri TEXT NOT NULL UNIQUE,
     scryfall_web_uri TEXT NOT NULL UNIQUE,
     scryfall_oracle_id UUID NOT NULL,

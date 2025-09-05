@@ -19,7 +19,7 @@ type InsertCardsParams struct {
 	LanguageCode     string
 	SpanishName      pgtype.Text
 	Rarity           pgtype.Text
-	TypeLine         pgtype.Text
+	TypeLine         string
 	ScryfallApiUri   string
 	ScryfallWebUri   string
 	ScryfallOracleID pgtype.UUID
