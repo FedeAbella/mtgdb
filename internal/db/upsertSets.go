@@ -26,12 +26,12 @@ func buildSetsToInsertAndUpdate(
 	for fileSetID, fileSet := range fileSetMap {
 		dbSet, inDb := dbSetMap[fileSetID.String()]
 		if !inDb {
-			setsToInsert = append(setsToInsert, fileSet.ToDbInsertSet())
+			setsToInsert = append(setsToInsert, fileSet.ToDbInsertSet(time.Now()))
 			continue
 		}
 
 		if !fileSet.Equals(&dbSet) {
-			setsToUpdate = append(setsToUpdate, fileSet.ToDbUpdateSet())
+			setsToUpdate = append(setsToUpdate, fileSet.ToDbUpdateSet(time.Now()))
 		}
 	}
 

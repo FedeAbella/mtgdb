@@ -19,7 +19,7 @@ func (s *Set) Equals(dbSet *sqlc.Set) bool {
 	return s.ScryfallId == dbSet.ScryfallID.Bytes && s.Code == dbSet.Code && s.Name == dbSet.Name
 }
 
-func (s *Set) ToDbInsertSet() sqlc.InsertSetsParams {
+func (s *Set) ToDbInsertSet(now time.Time) sqlc.InsertSetsParams {
 	return sqlc.InsertSetsParams{
 		ScryfallID: pgtype.UUID{
 			Bytes: s.ScryfallId,
@@ -28,17 +28,17 @@ func (s *Set) ToDbInsertSet() sqlc.InsertSetsParams {
 		Code: s.Code,
 		Name: s.Name,
 		CreatedAt: pgtype.Timestamp{
-			Time:  time.Now(),
+			Time:  now,
 			Valid: true,
 		},
 		UpdatedAt: pgtype.Timestamp{
-			Time:  time.Now(),
+			Time:  now,
 			Valid: true,
 		},
 	}
 }
 
-func (s *Set) ToDbUpdateSet() sqlc.UpdateSetParams {
+func (s *Set) ToDbUpdateSet(now time.Time) sqlc.UpdateSetParams {
 	return sqlc.UpdateSetParams{
 		ScryfallID: pgtype.UUID{
 			Bytes: s.ScryfallId,
@@ -47,7 +47,7 @@ func (s *Set) ToDbUpdateSet() sqlc.UpdateSetParams {
 		Code: s.Code,
 		Name: s.Name,
 		UpdatedAt: pgtype.Timestamp{
-			Time:  time.Now(),
+			Time:  now,
 			Valid: true,
 		},
 	}
