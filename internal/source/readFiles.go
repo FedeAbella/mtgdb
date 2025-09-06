@@ -20,8 +20,7 @@ func (d *jsonDecoder[T]) decodeArray(f io.Reader) ([]T, error) {
 	decoder := json.NewDecoder(f)
 
 	// Remove the opening array token
-	_, err := decoder.Token()
-	if err != nil {
+	if _, err := decoder.Token(); err != nil {
 		log.Println(err)
 		return []T{}, err
 	}
@@ -29,8 +28,7 @@ func (d *jsonDecoder[T]) decodeArray(f io.Reader) ([]T, error) {
 	// Extract each structured element of the array
 	for decoder.More() {
 		card := new(T)
-		err := decoder.Decode(card)
-		if err != nil {
+		if err := decoder.Decode(card); err != nil {
 			log.Println(err)
 			return []T{}, err
 		}
@@ -39,8 +37,7 @@ func (d *jsonDecoder[T]) decodeArray(f io.Reader) ([]T, error) {
 	}
 
 	// Remove the closing array token, ensuring the array is complete
-	_, err = decoder.Token()
-	if err != nil {
+	if _, err := decoder.Token(); err != nil {
 		log.Println(err)
 		return []T{}, err
 	}
@@ -71,10 +68,6 @@ func GetScryfallData() (map[uuid.UUID]Set, map[uuid.UUID]CardPrinting, error) {
 	)
 
 	sets, cards := scryfallToSetsCards(sfCards)
-	if err != nil {
-		log.Println(err)
-		return map[uuid.UUID]Set{}, map[uuid.UUID]CardPrinting{}, err
-	}
 
 	log.Printf(
 		"Unpacked Scryfall data into %d sets and %d printings",
