@@ -9,7 +9,6 @@ import (
 	"github.com/joho/godotenv"
 
 	"FedeAbella/mtgdb/internal/db"
-	"FedeAbella/mtgdb/internal/source"
 	"FedeAbella/mtgdb/internal/sqlc"
 )
 
@@ -23,15 +22,11 @@ func main() {
 	defer conn.Close(context.Background())
 
 	db := db.DbConf{
-
+		Conn:    conn,
 		Queries: sqlc.New(conn),
 	}
 
-	_, _, err = source.GetScryfallData()
-	if err != nil {
+	if err = db.UpsertSetsAndCards(); err != nil {
 		log.Fatal(err)
 	}
-
-	db.UpdateSets()
-	db.UpdateCards()
 }
