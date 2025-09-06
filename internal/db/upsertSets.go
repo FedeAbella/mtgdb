@@ -11,9 +11,10 @@ import (
 	"FedeAbella/mtgdb/internal/sqlc"
 )
 
-func buildSetsToInsertAndUpdate(
+func mapSetsToInsertAndUpdate(
 	fileSetMap map[uuid.UUID]source.Set,
 	dbSets []sqlc.Set,
+	now time.Time,
 ) ([]sqlc.InsertSetsParams, []sqlc.UpdateSetParams) {
 	dbSetMap := map[string]sqlc.Set{}
 	for _, dbSet := range dbSets {
@@ -26,12 +27,12 @@ func buildSetsToInsertAndUpdate(
 	for fileSetID, fileSet := range fileSetMap {
 		dbSet, inDb := dbSetMap[fileSetID.String()]
 		if !inDb {
-			setsToInsert = append(setsToInsert, fileSet.ToDbInsertSet(time.Now()))
+			setsToInsert = append(setsToInsert, fileSet.ToDbInsertSet(now))
 			continue
 		}
 
 		if !fileSet.Equals(&dbSet) {
-			setsToUpdate = append(setsToUpdate, fileSet.ToDbUpdateSet(time.Now()))
+			setsToUpdate = append(setsToUpdate, fileSet.ToDbUpdateSet(now))
 		}
 	}
 
@@ -103,7 +104,7 @@ func (db *DbConf) upsertSets(fileSetMap map[uuid.UUID]source.Set) error {
 		return err
 	}
 
-	setsToInsert, setsToUpdate := buildSetsToInsertAndUpdate(fileSetMap, dbSets)
+	setsToInsert, setsToUpdate := mapSetsToInsertAndUpdate(fileSetMap, dbSets, time.Now())
 
 	log.Printf("%d sets to be inserted in db", len(setsToInsert))
 	log.Printf("%d sets to be updated in db", len(setsToUpdate))
