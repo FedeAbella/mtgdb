@@ -11,9 +11,10 @@ import (
 	"FedeAbella/mtgdb/internal/sqlc"
 )
 
-func buildCardsToInsertAndUpdate(
+func mapCardsToInsertAndUpdate(
 	fileCardMap map[uuid.UUID]source.CardPrinting,
 	dbCards []sqlc.Card,
+	now time.Time,
 ) ([]sqlc.InsertCardsParams, []sqlc.UpdateCardParams) {
 	dbCardMap := map[string]sqlc.Card{}
 	for _, dbCard := range dbCards {
@@ -26,12 +27,12 @@ func buildCardsToInsertAndUpdate(
 	for fileCardId, fileCard := range fileCardMap {
 		dbCard, inDb := dbCardMap[fileCardId.String()]
 		if !inDb {
-			cardsToInsert = append(cardsToInsert, fileCard.ToDbInsertCard(time.Now()))
+			cardsToInsert = append(cardsToInsert, fileCard.ToDbInsertCard(now))
 			continue
 		}
 
 		if !fileCard.Equals(&dbCard) {
-			cardsToUpdate = append(cardsToUpdate, fileCard.ToDbUpdateCard(time.Now()))
+			cardsToUpdate = append(cardsToUpdate, fileCard.ToDbUpdateCard(now))
 		}
 	}
 
@@ -103,7 +104,7 @@ func (db *DbConf) upsertCards(fileCardMap map[uuid.UUID]source.CardPrinting) err
 		return err
 	}
 
-	cardsToInsert, cardsToUpdate := buildCardsToInsertAndUpdate(fileCardMap, dbCards)
+	cardsToInsert, cardsToUpdate := mapCardsToInsertAndUpdate(fileCardMap, dbCards, time.Now())
 
 	log.Printf("%d cards to be inserted in db", len(cardsToInsert))
 	log.Printf("%d cards to be updated in db", len(cardsToUpdate))
