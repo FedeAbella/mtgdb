@@ -11,12 +11,14 @@ import (
 )
 
 func Test_EqualsSqlcCard(t *testing.T) {
-	cases := []struct {
+	tests := []struct {
+		name          string
 		Printing      CardPrinting
 		SqlcCard      sqlc.Card
 		ExpectedEqual bool
 	}{
 		{
+			name: "are equal",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -71,6 +73,7 @@ func Test_EqualsSqlcCard(t *testing.T) {
 			ExpectedEqual: true,
 		},
 		{
+			name: "different collector number",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -122,9 +125,10 @@ func Test_EqualsSqlcCard(t *testing.T) {
 				},
 				TypeLine: "Sorcery",
 			},
-			ExpectedEqual: false, // Collector Number different
+			ExpectedEqual: false,
 		},
 		{
+			name: "different color identity",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -176,9 +180,10 @@ func Test_EqualsSqlcCard(t *testing.T) {
 				},
 				TypeLine: "Sorcery",
 			},
-			ExpectedEqual: false, // Color Identity different
+			ExpectedEqual: false,
 		},
 		{
+			name: "different language",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -230,9 +235,10 @@ func Test_EqualsSqlcCard(t *testing.T) {
 				},
 				TypeLine: "Sorcery",
 			},
-			ExpectedEqual: false, // Language different
+			ExpectedEqual: false,
 		},
 		{
+			name: "different name",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -284,9 +290,10 @@ func Test_EqualsSqlcCard(t *testing.T) {
 				},
 				TypeLine: "Sorcery",
 			},
-			ExpectedEqual: false, // Name different
+			ExpectedEqual: false,
 		},
 		{
+			name: "different spanish name",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -338,9 +345,10 @@ func Test_EqualsSqlcCard(t *testing.T) {
 				},
 				TypeLine: "Sorcery",
 			},
-			ExpectedEqual: false, // Spanish name different
+			ExpectedEqual: false,
 		},
 		{
+			name: "different rarity",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -392,9 +400,10 @@ func Test_EqualsSqlcCard(t *testing.T) {
 				},
 				TypeLine: "Sorcery",
 			},
-			ExpectedEqual: false, // Rarity different
+			ExpectedEqual: false,
 		},
 		{
+			name: "different api uri",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -446,9 +455,10 @@ func Test_EqualsSqlcCard(t *testing.T) {
 				},
 				TypeLine: "Sorcery",
 			},
-			ExpectedEqual: false, // API URI different
+			ExpectedEqual: false,
 		},
 		{
+			name: "different scryfall id",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -500,9 +510,10 @@ func Test_EqualsSqlcCard(t *testing.T) {
 				},
 				TypeLine: "Sorcery",
 			},
-			ExpectedEqual: false, // Scryfall ID different
+			ExpectedEqual: false,
 		},
 		{
+			name: "different oracle id",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -554,9 +565,10 @@ func Test_EqualsSqlcCard(t *testing.T) {
 				},
 				TypeLine: "Sorcery",
 			},
-			ExpectedEqual: false, // Scryfall Oracle ID different
+			ExpectedEqual: false,
 		},
 		{
+			name: "different web uri",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -608,9 +620,10 @@ func Test_EqualsSqlcCard(t *testing.T) {
 				},
 				TypeLine: "Sorcery",
 			},
-			ExpectedEqual: false, // Web URI different
+			ExpectedEqual: false,
 		},
 		{
+			name: "different set id",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -662,9 +675,10 @@ func Test_EqualsSqlcCard(t *testing.T) {
 				},
 				TypeLine: "Sorcery",
 			},
-			ExpectedEqual: false, // Set ID different
+			ExpectedEqual: false,
 		},
 		{
+			name: "different type line",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -716,31 +730,35 @@ func Test_EqualsSqlcCard(t *testing.T) {
 				},
 				TypeLine: "Instant",
 			},
-			ExpectedEqual: false, // Type line different
+			ExpectedEqual: false,
 		},
 	}
 
-	for _, tCase := range cases {
-		if res := tCase.Printing.Equals(&tCase.SqlcCard); res != tCase.ExpectedEqual {
-			t.Fatalf(
-				"Expected equality between %v and %v to return %v but returned %v instead",
-				tCase.Printing,
-				tCase.SqlcCard,
-				tCase.ExpectedEqual,
-				res,
-			)
-		}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if res := test.Printing.Equals(&test.SqlcCard); res != test.ExpectedEqual {
+				t.Fatalf(
+					"test %s expected %v but got %v",
+					test.name,
+					test.ExpectedEqual,
+					res,
+				)
+			}
+
+		})
 	}
 }
 
 func Test_ToDbInsertCard(t *testing.T) {
 	now := time.Date(2025, 9, 4, 21, 34, 0, 0, time.UTC)
 
-	cases := []struct {
+	tests := []struct {
+		name       string
 		Printing   CardPrinting
 		SqlcParams sqlc.InsertCardsParams
 	}{
 		{
+			name: "no empty values",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -802,6 +820,7 @@ func Test_ToDbInsertCard(t *testing.T) {
 			},
 		},
 		{
+			name: "no spanish name",
 			Printing: CardPrinting{
 				CollectorNumber:  "94",
 				ColorIdentity:    "BGRUW",
@@ -862,6 +881,7 @@ func Test_ToDbInsertCard(t *testing.T) {
 			},
 		},
 		{
+			name: "no color or color identity",
 			Printing: CardPrinting{
 				CollectorNumber:  "5",
 				ColorIdentity:    "",
@@ -924,26 +944,31 @@ func Test_ToDbInsertCard(t *testing.T) {
 		},
 	}
 
-	for _, tCase := range cases {
-		if params := tCase.Printing.ToDbInsertCard(now); params != tCase.SqlcParams {
-			t.Fatalf(
-				"Expected insert params %v from card %v but got %v instead",
-				tCase.SqlcParams,
-				tCase.Printing,
-				params,
-			)
-		}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if params := test.Printing.ToDbInsertCard(now); params != test.SqlcParams {
+				t.Fatalf(
+					"test %s expected %#v but got %#v instead",
+					test.name,
+					test.SqlcParams,
+					params,
+				)
+			}
+
+		})
 	}
 }
 
 func Test_ToDbUpdateCard(t *testing.T) {
 	now := time.Date(2025, 9, 4, 21, 34, 0, 0, time.UTC)
 
-	cases := []struct {
+	tests := []struct {
+		name       string
 		Printing   CardPrinting
 		SqlcParams sqlc.UpdateCardParams
 	}{
 		{
+			name: "no empty values",
 			Printing: CardPrinting{
 				CollectorNumber:  "107",
 				ColorIdentity:    "BGRUW",
@@ -1001,6 +1026,7 @@ func Test_ToDbUpdateCard(t *testing.T) {
 			},
 		},
 		{
+			name: "no spanish name",
 			Printing: CardPrinting{
 				CollectorNumber:  "94",
 				ColorIdentity:    "BGRUW",
@@ -1057,6 +1083,7 @@ func Test_ToDbUpdateCard(t *testing.T) {
 			},
 		},
 		{
+			name: "no colors or color identity",
 			Printing: CardPrinting{
 				CollectorNumber:  "5",
 				ColorIdentity:    "",
@@ -1115,14 +1142,16 @@ func Test_ToDbUpdateCard(t *testing.T) {
 		},
 	}
 
-	for _, tCase := range cases {
-		if params := tCase.Printing.ToDbUpdateCard(now); params != tCase.SqlcParams {
-			t.Fatalf(
-				"Expected update params %v from card %v but got %v instead",
-				tCase.SqlcParams,
-				tCase.Printing,
-				params,
-			)
-		}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if params := test.Printing.ToDbUpdateCard(now); params != test.SqlcParams {
+				t.Fatalf(
+					"test %s expected sqlc update params %#v but got %#v",
+					test.name,
+					test.SqlcParams,
+					params,
+				)
+			}
+		})
 	}
 }
