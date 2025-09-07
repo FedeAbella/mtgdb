@@ -9,12 +9,14 @@ import (
 )
 
 func Test_DecodeScryfallArray(t *testing.T) {
-	cases := []struct {
+	tests := []struct {
+		name        string
 		Input       string
 		ThrowsError bool
 		Expected    []ScryfallCard
 	}{
 		{
+			name: "good json",
 			Input: `
 				[
 				  {
@@ -181,6 +183,7 @@ func Test_DecodeScryfallArray(t *testing.T) {
 			},
 		},
 		{
+			name: "missing opening array bracket",
 			Input: `
 				  {
 				    "id": "00017e6d-bf93-4dcf-8751-f50aba77e2d2",
@@ -214,6 +217,7 @@ func Test_DecodeScryfallArray(t *testing.T) {
 			ThrowsError: true,
 		},
 		{
+			name: "extra comma before closing array bracket",
 			Input: `
 				[
 				  {
@@ -248,6 +252,7 @@ func Test_DecodeScryfallArray(t *testing.T) {
 			ThrowsError: true,
 		},
 		{
+			name: "missing closing array bracket",
 			Input: `
 				[
 				  {
@@ -284,31 +289,39 @@ func Test_DecodeScryfallArray(t *testing.T) {
 	}
 
 	decoder := jsonDecoder[ScryfallCard]{}
-	for _, testCase := range cases {
-		cards, err := decoder.decodeArray(bytes.NewBufferString(testCase.Input))
-		if testCase.ThrowsError {
-			if err == nil {
-				t.Fatalf("decoding json array %s should have failed but did not", testCase.Input)
-			} else {
-				return
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			cards, err := decoder.decodeArray(bytes.NewBufferString(test.Input))
+			if test.ThrowsError {
+				if err == nil {
+					t.Fatalf(
+						"test %s: decoding json array %s should have failed but did not",
+						test.name,
+						test.Input,
+					)
+				} else {
+					return
+				}
 			}
-		}
 
-		if err != nil {
-			t.Fatalf(
-				"decoding json array %s failed with error %v, but should have decoded correctly",
-				testCase.Input,
-				err,
-			)
-		}
+			if err != nil {
+				t.Fatalf(
+					"test %s: decoding json array %s failed with error %v, but should have decoded correctly",
+					test.name,
+					test.Input,
+					err,
+				)
+			}
 
-		if !reflect.DeepEqual(cards, testCase.Expected) {
-			t.Fatalf(
-				"decoding json array %s should have resulted in cards %v but got %v instead",
-				testCase.Input,
-				testCase.Expected,
-				cards,
-			)
-		}
+			if !reflect.DeepEqual(cards, test.Expected) {
+				t.Fatalf(
+					"test %s: decoding json array %s should have resulted in cards %#v but got %#v instead",
+					test.name,
+					test.Input,
+					test.Expected,
+					cards,
+				)
+			}
+		})
 	}
 }

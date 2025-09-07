@@ -8,30 +8,34 @@ import (
 )
 
 func Test_GetColors(t *testing.T) {
-	cases := []struct {
+	tests := []struct {
+		name     string
 		Input    ScryfallCard
 		Expected string
 	}{
 		{
+			name: "single face monocolor",
 			Input: ScryfallCard{
 				Colors: []Color{White},
 			},
 			Expected: White,
 		},
 		{
+			name: "single face all colors",
 			Input: ScryfallCard{
 				Colors: []Color{Black, Green, Red, Blue, White},
 			},
 			Expected: "BGRUW",
 		},
 		{
+			name: "single sided no colors",
 			Input: ScryfallCard{
 				Colors: []Color{},
-				Faces:  []ScryfallCardFace{},
 			},
 			Expected: "",
 		},
 		{
+			name: "double sided, different colors",
 			Input: ScryfallCard{
 				Colors: []Color{},
 				Faces: []ScryfallCardFace{
@@ -46,6 +50,7 @@ func Test_GetColors(t *testing.T) {
 			Expected: "RW",
 		},
 		{
+			name: "double sided, repeated color",
 			Input: ScryfallCard{
 				Colors: []Color{},
 				Faces: []ScryfallCardFace{
@@ -60,6 +65,7 @@ func Test_GetColors(t *testing.T) {
 			Expected: "RUW",
 		},
 		{
+			name: "double sided, front colorless",
 			Input: ScryfallCard{
 				Colors: []Color{},
 				Faces: []ScryfallCardFace{
@@ -74,6 +80,7 @@ func Test_GetColors(t *testing.T) {
 			Expected: "RW",
 		},
 		{
+			name: "double sided, back colorless",
 			Input: ScryfallCard{
 				Colors: []Color{},
 				Faces: []ScryfallCardFace{
@@ -88,6 +95,7 @@ func Test_GetColors(t *testing.T) {
 			Expected: "BG",
 		},
 		{
+			name: "double sided, all colorless",
 			Input: ScryfallCard{
 				Colors: []Color{},
 				Faces: []ScryfallCardFace{
@@ -103,30 +111,36 @@ func Test_GetColors(t *testing.T) {
 		},
 	}
 
-	for _, tCase := range cases {
-		if tCase.Input.getColors() != tCase.Expected {
-			t.Fatalf(
-				"Expected colors %s from card %v but got %s",
-				tCase.Expected,
-				tCase.Input,
-				tCase.Input.getColors(),
-			)
-		}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if test.Input.getColors() != test.Expected {
+				t.Fatalf(
+					"test %s expected colors %s from card %#v but got %s",
+					test.name,
+					test.Expected,
+					test.Input,
+					test.Input.getColors(),
+				)
+			}
+		})
 	}
 }
 
 func Test_GetSpanishName(t *testing.T) {
-	cases := []struct {
+	tests := []struct {
+		name     string
 		Input    ScryfallCard
 		Expected string
 	}{
 		{
+			name: "no language code",
 			Input: ScryfallCard{
 				LanguageCode: "",
 			},
 			Expected: "",
 		},
 		{
+			name: "single sided spanish",
 			Input: ScryfallCard{
 				LanguageCode: Spanish,
 				PrintedName:  "Bosque",
@@ -134,14 +148,15 @@ func Test_GetSpanishName(t *testing.T) {
 			Expected: "Bosque",
 		},
 		{
+			name: "single sided spanish code but no printed name",
 			Input: ScryfallCard{
 				LanguageCode: Spanish,
 				PrintedName:  "",
-				Faces:        []ScryfallCardFace{},
 			},
 			Expected: "",
 		},
 		{
+			name: "double sided spanish code but no printed name",
 			Input: ScryfallCard{
 				LanguageCode: Spanish,
 				PrintedName:  "",
@@ -157,6 +172,7 @@ func Test_GetSpanishName(t *testing.T) {
 			Expected: "",
 		},
 		{
+			name: "double sided spanish",
 			Input: ScryfallCard{
 				LanguageCode: Spanish,
 				Faces: []ScryfallCardFace{
@@ -172,32 +188,36 @@ func Test_GetSpanishName(t *testing.T) {
 		},
 	}
 
-	for _, tCase := range cases {
-		if tCase.Input.getSpanishName() != tCase.Expected {
-			t.Fatalf(
-				"Expected spanish name %s from card %v but got %s",
-				tCase.Expected,
-				tCase.Input,
-				tCase.Input.getSpanishName(),
-			)
-		}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if test.Input.getSpanishName() != test.Expected {
+				t.Fatalf(
+					"test %s expected spanish name %s from card %#v but got %s",
+					test.name,
+					test.Expected,
+					test.Input,
+					test.Input.getSpanishName(),
+				)
+			}
+		})
 	}
 }
 
 func Test_Unpack(t *testing.T) {
 
-	cases := []struct {
+	tests := []struct {
+		name         string
 		Input        ScryfallCard
 		ExpectedSet  Set
 		ExpectedCard CardPrinting
 	}{
 		{
+			name: "english single sided multicolor",
 			Input: ScryfallCard{
 				CMC:              5.0,
 				CollectorNumber:  "94",
 				ColorIdentity:    []Color{Black, Green, Red, Blue, White},
 				Colors:           []Color{Black, Green, Red, Blue, White},
-				Faces:            []ScryfallCardFace{},
 				LanguageCode:     English,
 				Name:             "Cromat",
 				PrintedName:      "",
@@ -233,12 +253,12 @@ func Test_Unpack(t *testing.T) {
 			},
 		},
 		{
+			name: "english single sided with color identity but no colors",
 			Input: ScryfallCard{
 				CMC:              3.0,
 				CollectorNumber:  "244",
 				ColorIdentity:    []Color{Black, Green, Red, Blue, White},
 				Colors:           []Color{},
-				Faces:            []ScryfallCardFace{},
 				LanguageCode:     English,
 				Name:             "Commander's Sphere",
 				PrintedName:      "",
@@ -274,12 +294,12 @@ func Test_Unpack(t *testing.T) {
 			},
 		},
 		{
+			name: "english single sided colorless",
 			Input: ScryfallCard{
 				CMC:              10.0,
 				CollectorNumber:  "5",
 				ColorIdentity:    []Color{},
 				Colors:           []Color{},
-				Faces:            []ScryfallCardFace{},
 				LanguageCode:     English,
 				Name:             "Ulamog, the Ceaseless Hunger",
 				PrintedName:      "",
@@ -315,12 +335,12 @@ func Test_Unpack(t *testing.T) {
 			},
 		},
 		{
+			name: "spanish single sided",
 			Input: ScryfallCard{
 				CMC:              6.0,
 				CollectorNumber:  "335",
 				ColorIdentity:    []Color{Red, Blue},
 				Colors:           []Color{Red, Blue},
-				Faces:            []ScryfallCardFace{},
 				LanguageCode:     Spanish,
 				Name:             "The Locust God",
 				PrintedName:      "El Dios Langosta",
@@ -356,6 +376,7 @@ func Test_Unpack(t *testing.T) {
 			},
 		},
 		{
+			name: "spanish double sided",
 			Input: ScryfallCard{
 				CMC:             3.0,
 				CollectorNumber: "189",
@@ -407,24 +428,28 @@ func Test_Unpack(t *testing.T) {
 		},
 	}
 
-	for _, tCase := range cases {
-		set, printing := tCase.Input.unpack()
-		if set != tCase.ExpectedSet {
-			t.Fatalf(
-				"Expected set %v from scryfall card %v but got %v instead",
-				tCase.ExpectedSet,
-				tCase.Input,
-				set,
-			)
-		}
-		if printing != tCase.ExpectedCard {
-			t.Fatalf(
-				"Expected card %v from scryfall card %v but got %v instead",
-				tCase.ExpectedCard,
-				tCase.Input,
-				printing,
-			)
-		}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			set, printing := test.Input.unpack()
+			if set != test.ExpectedSet {
+				t.Fatalf(
+					"test %s expected set %#v from scryfall card %#v but got %#v instead",
+					test.name,
+					test.ExpectedSet,
+					test.Input,
+					set,
+				)
+			}
+			if printing != test.ExpectedCard {
+				t.Fatalf(
+					"test %s expected card %#v from scryfall card %#v but got %#v instead",
+					test.name,
+					test.ExpectedCard,
+					test.Input,
+					printing,
+				)
+			}
+		})
 	}
 }
 
@@ -643,9 +668,9 @@ func Test_ToSetsCards(t *testing.T) {
 
 	extractedSetMap, extractedCardMap := scryfallToSetsCards(input)
 	if !reflect.DeepEqual(expectedSetMap, extractedSetMap) {
-		t.Fatalf("expected set map %v but got %v", expectedSetMap, extractedSetMap)
+		t.Fatalf("expected set map %#v but got %#v", expectedSetMap, extractedSetMap)
 	}
 	if !reflect.DeepEqual(expectedCardMap, extractedCardMap) {
-		t.Fatalf("expected card map %v but got %v", expectedCardMap, extractedCardMap)
+		t.Fatalf("expected card map %#v but got %#v", expectedCardMap, extractedCardMap)
 	}
 }
